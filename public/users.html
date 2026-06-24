@@ -1,0 +1,350 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Users & Saldo - Movabi Console</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="/style.css">
+    <style>
+        .u-search-box { background: var(--bg-card); border: 1px solid var(--border); border-radius: 12px; padding: 16px 24px; display: flex; gap: 16px; align-items: center; margin-bottom: 24px; }
+        .u-search-input-wrap { flex: 1; background: var(--bg-main); border: 1px solid var(--border); border-radius: 8px; padding: 12px 16px; display: flex; align-items: center; gap: 12px; }
+        .u-search-input-wrap input { background: transparent; border: none; outline: none; color: #fff; width: 100%; font-size: 13px; }
+        .btn-filter { background: transparent; border: 1px solid var(--border); color: var(--text-muted); padding: 12px 24px; border-radius: 8px; font-weight: 700; font-size: 12px; display: flex; align-items: center; gap: 8px; cursor: pointer; transition: 0.2s; }
+        .btn-filter:hover { background: rgba(255,255,255,0.05); color: #fff; }
+
+        .u-list { background: transparent; border: none; padding: 0; }
+        .u-card { background: var(--bg-card); border: 1px solid var(--border-light); border-radius: 16px; padding: 20px; margin-bottom: 20px; box-shadow: var(--shadow-card); transition: 0.3s; }
+        .u-card:hover { border-color: var(--primary); transform: translateY(-2px); }
+        .uc-top { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 20px; }
+        .uc-profile { display: flex; align-items: center; gap: 16px; }
+        .uc-avatar { width: 44px; height: 44px; border-radius: 12px; background: rgba(56, 189, 248, 0.1); color: var(--primary); font-weight: 800; font-size: 18px; font-family: var(--font-heading); font-style: italic; display: flex; justify-content: center; align-items: center; border: 1px solid rgba(56, 189, 248, 0.2); }
+        .uc-username { font-weight: 800; color: #fff; font-size: 16px; font-family: var(--font-heading); font-style: italic; margin-bottom: 4px; letter-spacing: 0.5px; text-transform: uppercase; }
+        .uc-id { font-family: 'Courier New', monospace; font-size: 11px; color: var(--text-muted); font-weight: 700; letter-spacing: 1px; }
+        .uc-actions { display: flex; gap: 8px; }
+        .uc-divider { height: 1px; background: var(--border); margin-bottom: 20px; }
+        .uc-bottom { display: flex; justify-content: space-between; align-items: center; }
+        .uc-lbl { font-size: 9px; font-weight: 800; color: var(--text-muted); text-transform: uppercase; letter-spacing: 1px; margin-bottom: 6px; }
+        .uc-val-saldo { font-family: var(--font-heading); font-size: 20px; font-weight: 800; font-style: italic; color: var(--primary); }
+        .uc-val-date { font-weight: 800; font-size: 12px; color: #fff; }
+        
+        .btn-icon { width: 32px; height: 32px; border-radius: 8px; background: transparent; border: 1px solid var(--border); color: var(--text-muted); display: flex; justify-content: center; align-items: center; cursor: pointer; transition: 0.2s; }
+        .btn-icon:hover { border-color: var(--primary); color: var(--primary); background: rgba(56, 189, 248, 0.05); }
+
+        /* Modal Wallet Adjustment */
+        .modal-box.wallet-modal { width: 450px; background: var(--bg-card); }
+        .wm-profile { background: var(--bg-main); border: 1px solid var(--border); border-radius: 12px; padding: 16px; display: flex; align-items: center; gap: 16px; margin-bottom: 16px; }
+        .wm-verify { font-size: 9px; font-weight: 800; color: var(--success); text-transform: uppercase; letter-spacing: 1px; display: flex; align-items: center; gap: 4px; border: 1px solid rgba(74,222,128,0.2); background: rgba(74,222,128,0.1); padding: 2px 6px; border-radius: 4px; }
+        
+        .wm-stats { display: flex; gap: 16px; margin-bottom: 16px; }
+        .wm-stat-box { flex: 1; background: var(--bg-main); border: 1px solid var(--border); border-radius: 12px; padding: 16px; text-align: center; }
+        .wm-stat-lbl { font-size: 10px; font-weight: 800; color: var(--text-muted); text-transform: uppercase; letter-spacing: 1px; margin-bottom: 8px; }
+        .wm-stat-val { font-family: var(--font-heading); font-size: 20px; font-weight: 700; font-style: italic; color: var(--primary); }
+        .wm-stat-active { font-size: 14px; font-weight: 700; color: var(--success); display: flex; align-items: center; justify-content: center; gap: 6px; }
+        
+        .wm-adjust { border: 1px solid var(--border); border-radius: 12px; padding: 20px; position: relative; margin-bottom: 24px; }
+        .wm-adjust-title { font-size: 10px; font-weight: 800; color: var(--text-muted); text-transform: uppercase; letter-spacing: 1px; margin-bottom: 16px; display: flex; justify-content: space-between; align-items: center; }
+        .wm-adjust-sync { font-size: 9px; color: var(--primary); background: rgba(56,189,248,0.1); padding: 2px 6px; border-radius: 4px; }
+        .wm-input { background: var(--bg-main); border: 1px solid var(--border); border-radius: 8px; color: #fff; font-size: 14px; padding: 16px; width: 100%; outline: none; margin-bottom: 16px; text-align: center; }
+        .wm-input:focus { border-color: var(--primary); box-shadow: 0 0 0 2px var(--primary-glow); }
+        
+        .wm-btn-group { display: flex; gap: 16px; }
+        .btn-inject { flex: 1; background: rgba(56,189,248,0.8); color: #fff; border: none; padding: 14px; border-radius: 8px; font-weight: 700; cursor: pointer; transition: 0.2s; box-shadow: 0 0 15px rgba(56,189,248,0.3); font-family: var(--font-heading); text-transform: uppercase; letter-spacing: 1px; }
+        .btn-inject:hover { background: var(--primary); box-shadow: 0 0 20px rgba(56,189,248,0.5); transform: translateY(-1px); color:#000; }
+        .btn-inject:disabled { opacity:0.5; cursor:not-allowed; transform:none; }
+        .btn-cut { flex: 1; background: transparent; color: var(--danger); border: 1px solid rgba(244,63,94,0.3); padding: 14px; border-radius: 8px; font-weight: 700; cursor: pointer; transition: 0.2s; font-family: var(--font-heading); text-transform: uppercase; letter-spacing: 1px; }
+        .btn-cut:hover { background: rgba(244,63,94,0.1); border-color: var(--danger); }
+        .btn-cut:disabled { opacity:0.5; cursor:not-allowed; }
+
+        .wm-log-title { font-size: 10px; font-weight: 800; color: var(--text-muted); text-transform: uppercase; letter-spacing: 1px; margin-bottom: 12px; }
+        .wm-log-empty { font-size: 10px; color: var(--text-muted); text-align: center; padding: 10px; font-style: italic; }
+    </style>
+</head>
+<body>
+
+    <div class="sidebar-overlay" onclick="document.querySelector('.sidebar').classList.remove('show')"></div>
+    <div class="sidebar">
+        <div class="sidebar-header">
+            <div class="logo-icon">M</div>
+            Movabi
+        </div>
+        <div class="sidebar-menu">
+            <div class="menu-lbl">Store Operations</div>
+            <a href="/dashboard" class="menu-item"><i class="fa-solid fa-shapes" style="width:20px"></i> Dashboard</a>
+            <a href="/my_produk" class="menu-item"><i class="fa-solid fa-cube" style="width:20px"></i> My Produk</a>
+            <a href="/kelola_stock" class="menu-item"><i class="fa-solid fa-box-open" style="width:20px"></i> Kelola Stock</a>
+            <a href="/voucher_promo" class="menu-item"><i class="fa-solid fa-ticket" style="width:20px"></i> Voucher & Promo</a>
+            <a href="/broadcast" class="menu-item"><i class="fa-solid fa-paper-plane" style="width:20px"></i> Broadcast</a>
+            
+            <div class="menu-lbl" style="margin-top: 24px;">System Administration</div>
+            <a href="/users" class="menu-item active"><i class="fa-regular fa-user" style="width:20px"></i> Users & Saldo</a>
+            <a href="/settings" class="menu-item"><i class="fa-solid fa-gear" style="width:20px"></i> Settings</a>
+        </div>
+    </div>
+
+    <div class="main-wrapper">
+        <div class="topbar">
+            <button id="mobile-menu-btn" class="mobile-menu-btn" onclick="document.querySelector('.sidebar').classList.toggle('show')"><i class="fa-solid fa-bars"></i></button>
+            <div class="top-title">USERS</div>
+            <div class="topbar-right">
+                <div class="search-bar">
+                    <i class="fa-solid fa-search text-muted"></i>
+                    <input type="text" placeholder="Cari data...">
+                </div>
+                <a href="#" class="top-icon-btn">
+                    <i class="fa-solid fa-bell"></i>
+                    <div class="badge"></div>
+                </a>
+                <a href="/logout" class="btn-logout"><i class="fa-solid fa-power-off"></i> KELUAR</a>
+                <div class="user-profile">
+                    <span>admin</span>
+                    <div class="avatar"><i class="fa-solid fa-user"></i></div>
+                </div>
+            </div>
+        </div>
+
+        <div class="content">
+            <div class="page-header">
+                <div class="page-title">
+                    <h1>Manajemen User & Saldo</h1>
+                    <p>Kelola pengguna, pantau saldo, dan aktivitas transaksi mereka.</p>
+                </div>
+            </div>
+
+            <div class="u-search-box" style="display: flex; gap: 12px; flex-wrap: wrap;">
+                <div class="u-search-input-wrap" style="flex: 1; min-width: 200px;">
+                    <i class="fa-solid fa-search text-muted"></i>
+                    <input type="text" id="searchUser" placeholder="Cari username atau Telegram ID..." oninput="filterUsers()">
+                </div>
+                <select id="filterSaldo" onchange="filterUsers()" style="background: rgba(255,255,255,0.05); color: #fff; border: 1px solid rgba(255,255,255,0.1); border-radius: 8px; padding: 0 16px; outline: none; cursor: pointer; min-height: 48px; font-family: inherit; font-size: 14px;">
+                    <option value="all" style="background: #121826; color: #fff;">Semua Pengguna</option>
+                    <option value="has_saldo" style="background: #121826; color: #fff;">Saldo > 0</option>
+                    <option value="no_saldo" style="background: #121826; color: #fff;">Saldo = Rp 0</option>
+                    <option value="highest" style="background: #121826; color: #fff;">Saldo Tertinggi</option>
+                </select>
+            </div>
+
+            <div class="u-list">
+                
+                <div id="userTableData">
+                    <!-- Injected rows -->
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal User Profile -->
+    <div class="modal-overlay" id="modalUser">
+        <div class="modal-box wallet-modal">
+            <div class="modal-header">
+                <div class="modal-title">PROFIL & TRANSAKSI</div>
+                <button class="modal-close" onclick="closeModal('modalUser')"><i class="fa-solid fa-xmark"></i></button>
+            </div>
+            <div class="modal-body" style="padding-top: 16px;">
+                <p style="color:var(--text-muted); font-size:11px; margin-top:-5px; margin-bottom: 20px;">Pemeriksaan detail aset pengguna.</p>
+                
+                <div class="wm-profile">
+                    <div class="u-avatar" id="muAvatar">D</div>
+                    <div>
+                        <div class="u-name" id="muName" style="font-size: 16px; margin-bottom:6px;">@DUMMYUSER</div>
+                        <div style="display:flex; align-items:center; gap:10px;">
+                            <div class="wm-verify"><i class="fa-solid fa-check-circle"></i> VERIFIKASI ID</div>
+                            <div class="u-id" id="muId" style="font-size: 11px;">12345678</div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="wm-stats">
+                    <div class="wm-stat-box">
+                        <div class="wm-stat-lbl">SALDO SAAT INI</div>
+                        <div class="wm-stat-val" id="muSaldo">Rp 0</div>
+                    </div>
+                    <div class="wm-stat-box">
+                        <div class="wm-stat-lbl">STATUS AKUN</div>
+                        <div class="wm-stat-active"><span style="width:6px; height:6px; background:var(--success); border-radius:50%; box-shadow:0 0 6px var(--success);"></span> ACTIVE</div>
+                    </div>
+                </div>
+                
+                <div class="wm-adjust">
+                    <div class="wm-adjust-title">
+                        <span>WALLET ADJUSTMENT</span>
+                        <span class="wm-adjust-sync">REALTIME SYNC</span>
+                    </div>
+                    
+                    <input type="number" class="wm-input" id="muInputAmount" placeholder="Input nominal saldo...">
+                    <input type="hidden" id="muTargetId">
+                    
+                    <div class="wm-btn-group">
+                        <button class="btn-inject" id="btnInjeksi" onclick="addSaldo()">+ INJEKSI</button>
+                        <button class="btn-cut" id="btnPotong" onclick="cutSaldo()">- POTONG</button>
+                    </div>
+                </div>
+                
+                <div class="wm-log-title">RECENT ACTIVITY LOG</div>
+                <div class="wm-log-empty">Tidak ada riwayat aktivitas terbaru.</div>
+                
+                <button class="btn btn-outline" style="width: 100%; padding: 16px; justify-content: center; background: rgba(255,255,255,0.05); margin-top: 24px;" onclick="closeModal('modalUser')">TUTUP DASHBOARD USER</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let usersData = decodeURIComponent("{{USERS_DATA}}");
+        let users = [];
+        try { users = JSON.parse(usersData); } catch(e) {}
+        
+        function renderUsers(list) {
+            let html = '';
+            let sorted = list.slice().reverse(); 
+
+            sorted.forEach(u => {
+                let uName = (u.username && u.username !== "undefined") ? '@'+u.username : u.nama || 'Pengguna';
+                let uInit = uName.replace('@', '').charAt(0).toUpperCase();
+                let saldo = u.balance || 0;
+                let regDate = u.registeredAt ? new Date(u.registeredAt).toLocaleDateString('id-ID') : 'Sistem Bot Aktif';
+                
+                html += `
+                <div class="u-card">
+                    <div class="uc-top">
+                        <div class="uc-profile">
+                            <div class="uc-avatar">${uInit}</div>
+                            <div class="uc-names">
+                                <div class="uc-username">${uName}</div>
+                                <div class="uc-id">ID: ${u.id}</div>
+                            </div>
+                        </div>
+                        <div class="uc-actions">
+                            <button class="btn-icon"><i class="fa-solid fa-clock-rotate-left"></i></button>
+                            <button class="btn-icon" onclick="openUserModal('${u.id}')"><i class="fa-regular fa-trash-can"></i></button>
+                        </div>
+                    </div>
+                    <div class="uc-divider"></div>
+                    <div class="uc-bottom">
+                        <div class="uc-stat">
+                            <div class="uc-lbl">SALDO SAAT INI</div>
+                            <div class="uc-val-saldo">Rp ${parseInt(saldo).toLocaleString('id-ID')}</div>
+                        </div>
+                        <div class="uc-stat" style="text-align: right;">
+                            <div class="uc-lbl">BERGABUNG</div>
+                            <div class="uc-val-date">${regDate}</div>
+                        </div>
+                    </div>
+                </div>
+                `;
+            });
+            document.getElementById('userTableData').innerHTML = html;
+        }
+
+        function filterUsers() {
+            let q = document.getElementById('searchUser').value.toLowerCase();
+            let filterType = document.getElementById('filterSaldo').value;
+
+            let filtered = users.filter(x => 
+                (x.username && x.username.toLowerCase().includes(q)) || 
+                (x.nama && x.nama.toLowerCase().includes(q)) || 
+                (String(x.id).includes(q))
+            );
+
+            if (filterType === 'has_saldo') {
+                filtered = filtered.filter(x => (x.balance || 0) > 0);
+            } else if (filterType === 'no_saldo') {
+                filtered = filtered.filter(x => (x.balance || 0) === 0);
+            }
+
+            if (filterType === 'highest') {
+                // Urutkan dari kecil ke besar, karena renderUsers akan me-reverse array nya.
+                filtered.sort((a, b) => (a.balance || 0) - (b.balance || 0));
+            }
+
+            renderUsers(filtered);
+        }
+        
+        function openUserModal(id) {
+            let u = users.find(x => String(x.id) === String(id));
+            if(!u) return;
+            
+            let uName = (u.username && u.username !== "undefined") ? '@'+u.username : u.nama || 'Pengguna';
+            let uInit = uName.replace('@', '').charAt(0).toUpperCase();
+            
+            document.getElementById('muAvatar').innerText = uInit;
+            document.getElementById('muName').innerText = uName;
+            document.getElementById('muId').innerText = u.id;
+            document.getElementById('muSaldo').innerText = 'Rp ' + parseInt(u.balance || 0).toLocaleString();
+            document.getElementById('muTargetId').value = u.id;
+            document.getElementById('muInputAmount').value = '';
+            
+            document.getElementById('modalUser').style.display = 'flex';
+        }
+        
+        function closeModal(id) { document.getElementById(id).style.display = 'none'; }
+
+        function addSaldo() {
+            let id = document.getElementById('muTargetId').value;
+            let amount = parseInt(document.getElementById('muInputAmount').value);
+            
+            if(!id) return alert('Pilih pengguna');
+            if(!amount || amount <= 0) return alert('Masukkan nominal yang valid');
+            
+            let btn = document.getElementById('btnInjeksi');
+            btn.disabled = true;
+            
+            fetch('/api/saldo/add', {
+                method: 'POST',
+                headers: {'Content-Type': 'application/json'},
+                body: JSON.stringify({id: id, amount: amount})
+            }).then(res => res.json()).then(data => {
+                if(data.success) {
+                    window.location.reload();
+                } else {
+                    alert('Gagal: ' + data.error);
+                    btn.disabled = false;
+                }
+            }).catch(e => {
+                alert('Kesalahan jaringan');
+                btn.disabled = false;
+            });
+        }
+        
+        function cutSaldo() {
+            let id = document.getElementById('muTargetId').value;
+            let amount = parseInt(document.getElementById('muInputAmount').value);
+            
+            if(!id) return alert('Pilih pengguna');
+            if(!amount || amount <= 0) return alert('Masukkan nominal yang valid');
+            
+            let btn = document.getElementById('btnPotong');
+            btn.disabled = true;
+            
+            fetch('/api/saldo/cut', {
+                method: 'POST',
+                headers: {'Content-Type': 'application/json'},
+                body: JSON.stringify({id: id, amount: amount})
+            }).then(res => res.json()).then(data => {
+                if(data.success) {
+                    window.location.reload();
+                } else {
+                    alert('Gagal: ' + data.error);
+                    btn.disabled = false;
+                }
+            }).catch(e => {
+                alert('Endpoint mungkin belum tersedia, namun UI telah dimutakhirkan. Harap tambahkan API /api/saldo/cut di dashboard.js jika belum.');
+                btn.disabled = false;
+            });
+        }
+        
+        window.onload = function() {
+            renderUsers(users);
+            
+            const searchInputs = document.querySelectorAll('.search-bar input');
+            searchInputs.forEach(input => {
+                input.addEventListener('input', (e) => {
+                    let searchUser = document.getElementById('searchUser');
+                    if(searchUser && searchUser !== input) searchUser.value = e.target.value;
+                    filterUsers();
+                    searchInputs.forEach(other => { if(other !== input) other.value = e.target.value; });
+                });
+            });
+        };
+    </script>
+</body>
+</html>

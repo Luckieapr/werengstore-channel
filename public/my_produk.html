@@ -1,0 +1,305 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Produk - Movabi Console</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="/style.css">
+</head>
+<body>
+
+    <div class="sidebar-overlay" onclick="document.querySelector('.sidebar').classList.remove('show')"></div>
+    <div class="sidebar">
+        <div class="sidebar-header">
+            <div class="logo-icon">M</div>
+            Movabi
+        </div>
+        <div class="sidebar-menu">
+            <div class="menu-lbl">Store Operations</div>
+            <a href="/dashboard" class="menu-item"><i class="fa-solid fa-shapes" style="width:20px"></i> Dashboard</a>
+            <a href="/my_produk" class="menu-item active"><i class="fa-solid fa-cube" style="width:20px"></i> My Produk</a>
+            <a href="/kelola_stock" class="menu-item"><i class="fa-solid fa-box-open" style="width:20px"></i> Kelola Stock</a>
+            <a href="/voucher_promo" class="menu-item"><i class="fa-solid fa-ticket" style="width:20px"></i> Voucher & Promo</a>
+            <a href="/broadcast" class="menu-item"><i class="fa-solid fa-paper-plane" style="width:20px"></i> Broadcast</a>
+            
+            <div class="menu-lbl" style="margin-top: 24px;">System Administration</div>
+            <a href="/users" class="menu-item"><i class="fa-regular fa-user" style="width:20px"></i> Users & Saldo</a>
+            <a href="/settings" class="menu-item"><i class="fa-solid fa-gear" style="width:20px"></i> Settings</a>
+        </div>
+    </div>
+
+    <div class="main-wrapper">
+        <div class="topbar">
+            <button id="mobile-menu-btn" class="mobile-menu-btn" onclick="document.querySelector('.sidebar').classList.toggle('show')"><i class="fa-solid fa-bars"></i></button>
+            <div class="top-title">PRODUCTS</div>
+            <div class="topbar-right">
+                <div class="search-bar">
+                    <i class="fa-solid fa-search text-muted"></i>
+                    <input type="text" placeholder="Cari data...">
+                </div>
+                <a href="#" class="top-icon-btn">
+                    <i class="fa-solid fa-bell"></i>
+                    <div class="badge"></div>
+                </a>
+                <a href="/logout" class="btn-logout"><i class="fa-solid fa-power-off"></i> KELUAR</a>
+                <div class="user-profile">
+                    <span>admin</span>
+                    <div class="avatar"><i class="fa-solid fa-user"></i></div>
+                </div>
+            </div>
+        </div>
+
+        <div class="content">
+            <div class="page-header" style="align-items: center;">
+                <div class="page-title">
+                    <h1>Manajemen Katalog</h1>
+                    <p>Kelola katalog produk premium, stok, dan promo bot anda.</p>
+                </div>
+                <div class="header-actions">
+                    <button class="btn btn-outline" id="btnHapusMassal" onclick="hapusMassalAction()" style="display:none;"><i class="fa-regular fa-trash-can"></i> Hapus Massal</button>
+                    <button class="btn btn-primary" onclick="openModal('modalAdd')"><i class="fa-solid fa-plus"></i> Tambah Katalog</button>
+                </div>
+            </div>
+
+            <div style="background: var(--bg-card); border: 1px solid var(--border); border-radius: 12px; padding: 12px; display: flex; gap: 16px; margin-bottom: 24px; box-shadow: var(--shadow-card);">
+                <div class="search-bar" style="flex: 1; border: none; background: var(--bg-main); width: auto;">
+                    <i class="fa-solid fa-search text-muted"></i>
+                    <input type="text" placeholder="Cari nama katalog...">
+                </div>
+            </div>
+
+            <div class="product-grid">
+                {{KATALOG_ROWS}}
+            </div>
+        </div>
+    </div>
+
+    <!-- MODAL UI -->
+    <div class="modal-overlay" id="modalAdd">
+        <div class="modal-box">
+            <div class="modal-header">
+                <div class="modal-title" id="modalTitle">TAMBAH KATALOG BARU</div>
+                <button class="modal-close" onclick="closeModal()"><i class="fa-solid fa-xmark"></i></button>
+            </div>
+            <div class="modal-body" style="display: flex; flex-direction: column; gap: 24px;">
+                <!-- LEfT COL -->
+                <div class="form-section">
+                    <div class="form-group" style="margin-bottom: 16px;">
+                        <label>NAMA KATALOG PRODUK</label>
+                        <input type="text" class="form-control" id="m_katalog" placeholder="Contoh: Akun Netflix Premium">
+                    </div>
+                    <div class="form-group">
+                        <label>DESKRIPSI PRODUK</label>
+                        <textarea class="form-control" id="m_desk" placeholder="Detail produk..."></textarea>
+                    </div>
+                </div>
+
+                <!-- RIGHT COL -->
+                <div style="display:flex; flex-direction:column;">
+                    <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:12px;">
+                        <label style="font-size:11px; font-weight:700; color:var(--text-muted); letter-spacing:0.5px;"><i class="fa-solid fa-layer-group"></i> VARIAN PRODUK</label>
+                        <button class="btn-outline" style="padding: 4px 10px; font-size: 10px; color: var(--primary); border-color: var(--primary); background: transparent; border: 1px solid var(--primary); border-radius: 6px; cursor:pointer;" onclick="addVariantForm()">+ TAMBAH VARIAN</button>
+                    </div>
+                    <div id="variantsWrapper" style="overflow-y:visible;">
+                        <div id="emptyVarianState" style="border: 1px dashed var(--border-light); background: rgba(0,0,0,0.2); border-radius: 12px; padding: 40px 20px; text-align: center; color: var(--text-muted); display: flex; flex-direction: column; align-items: center; justify-content: center; min-height: 200px;">
+                            <i class="fa-solid fa-box-open" style="font-size: 24px; margin-bottom: 12px; opacity: 0.5;"></i>
+                            <h4 style="color:#fff; font-size:13px; margin-bottom:6px;">BELUM ADA VARIAN PRODUK</h4>
+                            <p style="font-size:11px;">Silahkan isi nama katalog, lalu ketuk Tambah Varian.</p>
+                        </div>
+                        <div id="variantList"></div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-outline" onclick="closeModal()">Batal</button>
+                <button class="btn btn-primary" id="btnSimpan" onclick="simpanKatalog()">Simpan Katalog</button>
+            </div>
+        </div>
+    </div>
+
+
+    <script>
+        function checkHapusMassal() {
+            let anyChecked = document.querySelectorAll('.chk-row:checked').length > 0;
+            document.getElementById('btnHapusMassal').style.display = anyChecked ? 'flex' : 'none';
+        }
+
+        function hapusMassalAction() {
+            let checked = document.querySelectorAll('.chk-row:checked');
+            let ids = Array.from(checked).map(c => c.value);
+            if (confirm(`Yakin hapus ${ids.length} katalog terpilih (termasuk isi stok)?`)) {
+                fetch('/api/katalog/hapus', {
+                    method: 'POST',
+                    headers: {'Content-Type': 'application/json'},
+                    body: JSON.stringify({ ids })
+                }).then(() => window.location.reload());
+            }
+        }
+
+        function hapusKatalog(id) {
+            if (confirm(`Yakin hapus katalog ${id} (termasuk isi stok)?`)) {
+                fetch('/api/katalog/hapus', {
+                    method: 'POST',
+                    headers: {'Content-Type': 'application/json'},
+                    body: JSON.stringify({ ids: [id] })
+                }).then(() => window.location.reload());
+            }
+        }
+
+        let oldCatalogName = '';
+
+        function openModal(id, katName='', desc='', prodsStr='') {
+            document.getElementById(id).style.display = 'flex';
+            oldCatalogName = katName;
+            if (katName) {
+                document.getElementById('modalTitle').innerText = 'EDIT KATALOG';
+                document.getElementById('m_katalog').value = katName;
+                document.getElementById('m_desk').value = desc;
+                
+                document.getElementById('variantList').innerHTML = '';
+                varCounter = 0;
+                
+                if (prodsStr) {
+                    try {
+                        let prods = JSON.parse(prodsStr);
+                        if (prods.length > 0) {
+                            document.getElementById('emptyVarianState').style.display = 'none';
+                            prods.forEach(p => {
+                                varCounter++;
+                                let html = variantTemplate.replace(/\{ID\}/g, varCounter);
+                                document.getElementById('variantList').insertAdjacentHTML('beforeend', html);
+                                
+                                let el = document.getElementById('var__' + varCounter);
+                                el.dataset.existingId = p.id || '';
+                                el.querySelector('.v-name').value = p.name || '';
+                                el.querySelector('.v-desc').value = p.desc || '';
+                                el.querySelector('.v-price').value = p.price || 0;
+                                el.querySelector('.v-gPrice').value = p.grosir_price || '';
+                                el.querySelector('.v-gMin').value = p.grosir_min || '';
+                                el.querySelector('.v-msg').value = p.success_msg || '';
+                            });
+                        } else {
+                            document.getElementById('emptyVarianState').style.display = 'flex';
+                        }
+                    } catch(e) {
+                        console.error("Gagal membaca varian", e);
+                        document.getElementById('emptyVarianState').style.display = 'flex';
+                    }
+                } else {
+                    document.getElementById('emptyVarianState').style.display = 'flex';
+                }
+            } else {
+                document.getElementById('modalTitle').innerText = 'TAMBAH KATALOG BARU';
+                document.getElementById('m_katalog').value = '';
+                document.getElementById('m_desk').value = '';
+                document.getElementById('variantList').innerHTML = '';
+                varCounter = 0;
+                document.getElementById('emptyVarianState').style.display = 'flex';
+            }
+        }
+        function closeModal() {
+            document.querySelectorAll('.modal-overlay').forEach(m => m.style.display = 'none');
+        }
+
+        let varCounter = 0;
+        let variantTemplate = `
+        <div class="variant-card" id="var__{ID}" style="background: var(--bg-card); border: 1px solid var(--border-light); border-radius: 12px; padding: 20px; margin-bottom: 20px; position: relative;">
+            <button style="position: absolute; top: 16px; right: 16px; width: 32px; height: 32px; border-radius: 8px; background: rgba(244, 63, 94, 0.1); color: var(--danger); border:1px solid rgba(244, 63, 94, 0.2); display: flex; justify-content: center; align-items: center; cursor: pointer; transition:0.2s;" title="Hapus Varian" onclick="removeVariant('{ID}')"><i class="fa-solid fa-trash-can"></i></button>
+            
+            <div class="form-group" style="margin-bottom: 16px;"><label>NAMA VARIAN</label><input type="text" class="form-control v-name" placeholder="Premium 1 Bulan"></div>
+            
+            <div class="form-group" style="margin-bottom: 16px;"><label>DESKRIPSI VARIAN</label><textarea class="form-control v-desc" style="min-height:45px; padding:8px 12px;" rows="1" placeholder="Keterangan singkat varian"></textarea></div>
+            
+            <div class="form-group" style="margin-bottom: 16px;"><label>HARGA DASAR (RP)</label><input type="number" class="form-control v-price" value="0"></div>
+            
+            <div class="form-group" style="margin-bottom: 16px;"><label>HARGA GROSIR (RP)</label><input type="number" class="form-control v-gPrice" value="0"></div>
+            
+            <div class="form-group" style="margin-bottom: 16px;"><label>MIN GROSIR</label><input type="number" class="form-control v-gMin" value="1"></div>
+            
+            <div class="form-group" style="margin-bottom: 0;">
+                <label>PESAN SUKSES (PANJANG KEBAWAH DI DUKUNG)</label>
+                <textarea class="form-control v-msg" style="min-height:60px;" placeholder="Silahkan salin link:\nhttps://...\nTerima kasih!"></textarea>
+            </div>
+        </div>
+        `;
+
+        function addVariantForm() {
+            document.getElementById('emptyVarianState').style.display = 'none';
+            varCounter++;
+            let html = variantTemplate.replace(/\{ID\}/g, varCounter);
+            document.getElementById('variantList').insertAdjacentHTML('beforeend', html);
+        }
+
+        function removeVariant(id) {
+            document.getElementById('var__' + id).remove();
+            if(document.getElementById('variantList').children.length === 0) {
+                document.getElementById('emptyVarianState').style.display = 'flex';
+            }
+        }
+
+        async function simpanKatalog() {
+            let cName = document.getElementById('m_katalog').value.trim();
+            let cDesc = document.getElementById('m_desk').value.trim();
+            if(!cName) return alert('Peringatan: Nama Katalog tidak boleh kosong!');
+            
+            let varElms = document.querySelectorAll('.variant-card');
+            if(varElms.length === 0) return alert('Peringatan: Kamu belum memasukkan satupun Varian Produk! Klik "Tambah Varian".');
+
+            let variants = [];
+            for (let el of varElms) {
+                let name = el.querySelector('.v-name').value.trim();
+                let priceRaw = el.querySelector('.v-price').value;
+                if(!name || !priceRaw) return alert('Setiap varian wajib memiliki Nama dan Harga Dasar!');
+                
+                variants.push({
+                    id: el.dataset.existingId || null,
+                    name: name,
+                    desc: el.querySelector('.v-desc').value.trim(),
+                    price: parseInt(priceRaw) || 0,
+                    grosirPrice: parseInt(el.querySelector('.v-gPrice').value) || 0,
+                    grosirMin: parseInt(el.querySelector('.v-gMin').value) || 0,
+                    msg: el.querySelector('.v-msg').value.trim(),
+                    flashSale: null
+                });
+            }
+
+            let payload = { catalogName: cName, oldCatalogName: oldCatalogName, catalogDesc: cDesc, variants: variants };
+
+            const btn = document.getElementById('btnSimpan');
+            btn.innerHTML = 'Menyimpan...';
+            btn.disabled = true;
+
+            try {
+                let res = await fetch('/api/katalog/simpan', {
+                    method: 'POST',
+                    headers: {'Content-Type':'application/json'},
+                    body: JSON.stringify(payload)
+                });
+                let json = await res.json();
+                if(json.success) {
+                    window.location.reload();
+                } else alert('Gagal menyimpan: ' + json.error);
+            } catch(e) {
+                alert('Terkendala koneksi ke server bot.');
+            }
+            btn.innerHTML = 'Simpan Katalog';
+            btn.disabled = false;
+        }
+
+        document.addEventListener('DOMContentLoaded', () => {
+            const searchInputs = document.querySelectorAll('.search-bar input');
+            searchInputs.forEach(input => {
+                input.addEventListener('input', (e) => {
+                    let val = e.target.value.toLowerCase();
+                    document.querySelectorAll('.product-card').forEach(card => {
+                        let title = card.querySelector('.pc-title').innerText.toLowerCase();
+                        card.style.display = title.includes(val) ? 'flex' : 'none';
+                    });
+                    searchInputs.forEach(other => { if(other !== input) other.value = e.target.value; });
+                });
+            });
+        });
+    </script>
+</body>
+</html>

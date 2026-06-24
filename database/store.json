@@ -1,0 +1,94 @@
+{
+  "categories": ["EMAIL FRESH", "CHAT GPT", "GEMINI AI"],
+  "products": [
+    {
+      "id": "P1779535818375_0",
+      "category": "CHAT GPT",
+      "name": "PLUS 1 BULAN",
+      "desc": "NOGAR",
+      "price": 40000,
+      "grosir_price": null,
+      "grosir_min": 1,
+      "success_msg": "Amankan data akun kalian.\n\n🗣 : CARA LOGIN CHAT-GPT ‼\n\n1. Login ke Chat-GPT, mengunakan data kalian,\n2. Setelah itu masuk ke ( twofa.co ) lalu copy-paste 2FA kalian,\n3. Lalu Copy Kode yang muncul dan isi ke Chat-GPT,\n4. done , kalian sudah bisa mengunakan nya.\n\nhttps://t.me/movabii/69",
+      "stocks": [],
+      "linked_product_id": null
+    },
+    {
+      "id": "P1779535818375_1",
+      "category": "CHAT GPT",
+      "name": "GO 2-3 BULAN",
+      "desc": "NOGAR",
+      "price": 30000,
+      "grosir_price": null,
+      "grosir_min": 1,
+      "success_msg": "Amankan data akun kalian.\n\n🗣 : CARA LOGIN CHAT-GPT ‼\n\n1. Login ke Chat-GPT, mengunakan data kalian,\n2. Setelah itu masuk ke ( twofa.co ) lalu copy-paste 2FA kalian,\n3. Lalu Copy Kode yang muncul dan isi ke Chat-GPT,\n4. done , kalian sudah bisa mengunakan nya.\n\nhttps://t.me/movabii/69",
+      "stocks": [],
+      "linked_product_id": null
+    },
+    {
+      "id": "P1779405018165_0",
+      "category": "GEMINI AI",
+      "name": "3 Bulan",
+      "desc": "No Garansi",
+      "price": 30000,
+      "grosir_price": null,
+      "grosir_min": 1,
+      "success_msg": "Silahkan amankan data akun. 🥰",
+      "stocks": [],
+      "linked_product_id": null
+    },
+    {
+      "id": "P1780878053860_2",
+      "category": "GEMINI AI",
+      "name": "12 Bulan - Bergaransi",
+      "desc": "Garansi 1 Bulan",
+      "price": 50000,
+      "grosir_price": 45000,
+      "grosir_min": 5,
+      "success_msg": "Silahkan amankan data akun. 🥰\nCek Kode 2fa di : (twofa.co)",
+      "stocks": [],
+      "linked_product_id": null
+    },
+    {
+      "id": "P1780966131296_2",
+      "category": "GEMINI AI",
+      "name": "Invite 12 Bulan",
+      "desc": "Sharing, Garansi 1 Bulan\nKirimkan Email Akun kamu di Catatan",
+      "price": 15000,
+      "grosir_price": null,
+      "grosir_min": 1,
+      "success_msg": "Jangan lupa hubungin @MeMasEnd untuk detail kendala.",
+      "stocks": [],
+      "linked_product_id": null
+    },
+    {
+      "id": "P1779534942108_0",
+      "category": "EMAIL FRESH",
+      "name": "GMAIL",
+      "desc": "",
+      "price": 4000,
+      "grosir_price": null,
+      "grosir_min": 1,
+      "success_msg": "Silahkan Amankan Data Akun.",
+      "stocks": [],
+      "linked_product_id": null
+    },
+    {
+      "id": "P1779534942108_1",
+      "category": "EMAIL FRESH",
+      "name": "EMAIL OUTLOOK",
+      "desc": "",
+      "price": 700,
+      "grosir_price": null,
+      "grosir_min": 1,
+      "success_msg": "Silahkan Amankan Data Akun.",
+      "stocks": [],
+      "linked_product_id": null
+    }
+  ],
+  "category_details": {
+    "EMAIL FRESH": "GARANSI LOGIN",
+    "CHAT GPT": "NOGAR",
+    "GEMINI AI": "Akses GeminiAi Pro, KapasitasPenyimpanan TB, Khusus akun NonInvite : Bisa Invite 5 anggota, DLL"
+  }
+}

@@ -1,0 +1,371 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Kelola Stock - Movabi Console</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="/style.css">
+</head>
+<body>
+
+    <div class="sidebar-overlay" onclick="document.querySelector('.sidebar').classList.remove('show')"></div>
+    <div class="sidebar">
+        <div class="sidebar-header">
+            <div class="logo-icon">M</div>
+            Movabi
+        </div>
+        <div class="sidebar-menu">
+            <div class="menu-lbl">Store Operations</div>
+            <a href="/dashboard" class="menu-item"><i class="fa-solid fa-shapes" style="width:20px"></i> Dashboard</a>
+            <a href="/my_produk" class="menu-item"><i class="fa-solid fa-cube" style="width:20px"></i> My Produk</a>
+            <a href="/kelola_stock" class="menu-item active"><i class="fa-solid fa-box-open" style="width:20px"></i> Kelola Stock</a>
+            <a href="/voucher_promo" class="menu-item"><i class="fa-solid fa-ticket" style="width:20px"></i> Voucher & Promo</a>
+            <a href="/broadcast" class="menu-item"><i class="fa-solid fa-paper-plane" style="width:20px"></i> Broadcast</a>
+            
+            <div class="menu-lbl" style="margin-top: 24px;">System Administration</div>
+            <a href="/users" class="menu-item"><i class="fa-regular fa-user" style="width:20px"></i> Users & Saldo</a>
+            <a href="/settings" class="menu-item"><i class="fa-solid fa-gear" style="width:20px"></i> Settings</a>
+        </div>
+    </div>
+
+    <div class="main-wrapper">
+        <div class="topbar">
+            <button id="mobile-menu-btn" class="mobile-menu-btn" onclick="document.querySelector('.sidebar').classList.toggle('show')"><i class="fa-solid fa-bars"></i></button>
+            <div class="top-title">STOCK</div>
+            <div class="topbar-right">
+                <div class="search-bar">
+                    <i class="fa-solid fa-search text-muted"></i>
+                    <input type="text" placeholder="Cari data...">
+                </div>
+                <a href="#" class="top-icon-btn">
+                    <i class="fa-solid fa-bell"></i>
+                    <div class="badge"></div>
+                </a>
+                <a href="/logout" class="btn-logout"><i class="fa-solid fa-power-off"></i> KELUAR</a>
+                <div class="user-profile">
+                    <span>admin</span>
+                    <div class="avatar"><i class="fa-solid fa-user"></i></div>
+                </div>
+            </div>
+        </div>
+
+        <div class="content">
+            <div class="page-header" style="margin-bottom: 32px;">
+                <div class="page-title">
+                    <h1>Inventory Control</h1>
+                    <p>Monitoring dan kelola persediaan produk bot anda secara real-time.</p>
+                </div>
+            </div>
+
+            <div style="display: flex; gap: 24px; margin-bottom: 24px;">
+                <div class="search-bar" style="flex: 1; border-color: var(--border); background: var(--bg-card); width: auto; border-radius: 12px; padding: 14px 20px;">
+                    <i class="fa-solid fa-search text-muted"></i>
+                    <input type="text" placeholder="Cari Katalog atau Varian..." style="font-size: 14px;">
+                </div>
+                
+                <div class="alert-box" style="margin-bottom: 0; min-width: 250px;">
+                    <div>
+                        <div class="alert-title">LOW STOCK ALERT</div>
+                        <div class="alert-val">{{LOW_STOCK_COUNT}} Items</div>
+                    </div>
+                    <div class="alert-icon"><i class="fa-solid fa-circle-exclamation"></i></div>
+                </div>
+            </div>
+
+            <div class="product-grid stock-grid" id="accordionContainer">
+                <!-- CATALOG_DATA is injected below -->
+            </div>
+
+            <!-- Modal Insert Stock -->
+            <div class="modal-overlay" id="modalAddStock">
+                <div class="modal-box">
+                    <div class="modal-header">
+                        <div class="modal-title">INPUT STOCK MASAL</div>
+                        <button class="modal-close" onclick="closeModal('modalAddStock')"><i class="fa-solid fa-xmark"></i></button>
+                    </div>
+                    <div class="modal-body">
+                        <p style="color:var(--text-muted); font-size:11px; margin-bottom:12px; margin-top:-10px;">Masukkan data produk yang ingin ditambahkan</p>
+                        <div style="border:1px solid rgba(14,165,233,0.3); background:rgba(14,165,233,0.05); padding:16px; border-radius:12px; margin-bottom:20px; font-size:11px; color:#0ea5e9; line-height: 1.6;">
+                            <div style="display:flex; gap:12px;">
+                                <i class="fa-solid fa-circle-exclamation" style="font-size: 18px; margin-top:2px;"></i>
+                                <div style="font-weight: 600;">
+                                    <div>• FORMAT AKUN: EMAIL|PASSWORD|2FA|PIN|PROFILE|EXP (HARI)</div>
+                                    <div>• FORMAT LINK: TEMPEL LINK PER BARIS</div>
+                                    <div>• 1 BARIS AKAN DIHITUNG SEBAGAI 1 STOK UNIT</div>
+                                    <div>• MISAL SAYA INGIN MENGISI EMAIL &amp; PROFIL DGN EXP 3 HARI MAKA FORMATNYA : mova@saya.id|||||3</div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label><i class="fa-solid fa-file-lines" style="color:var(--primary)"></i> TEMPEL DATA DISINI (PER BARIS)</label>
+                            <textarea id="taStockLines" class="form-control" style="height:180px; font-family:'Courier New', monospace; resize:vertical; font-size:13px; line-height: 1.5;" oninput="updateLineCount()" placeholder="GUNAKAN TANDA ( | ) SEBAGAI PEMISAH, KOSONGKAN JIKA TIDAK MAU DI ISI"></textarea>
+                        </div>
+                        
+                        <div style="font-size:11px; font-weight:700; color:var(--text-muted); text-transform: uppercase; letter-spacing: 0.5px;">
+                            TERDETEKSI: <span id="lineCount" style="color:var(--primary); font-size: 14px;">0</span> BARIS STOCK
+                        </div>
+                        <input type="hidden" id="addStockPid" value="">
+                    </div>
+                    <div class="modal-footer" style="justify-content: space-between;">
+                        <button class="btn btn-outline" style="flex:1; justify-content: center;" onclick="closeModal('modalAddStock')">BATAL</button>
+                        <button class="btn btn-primary" style="flex:1; justify-content: center;" id="btnSimpanStock" onclick="submitAddStock()">SIMPAN STOCK</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Modal View / Delete Stock -->
+            <div class="modal-overlay" id="modalViewStock">
+                <div class="modal-box">
+                    <div class="modal-header">
+                        <div class="modal-title">DATA STOK VARIAN</div>
+                        <button class="modal-close" onclick="closeModal('modalViewStock')"><i class="fa-solid fa-xmark"></i></button>
+                    </div>
+                    <div class="modal-body">
+                        <div id="vsVariantName" style="color:var(--text-muted); font-size:12px; font-weight:600; text-transform:uppercase; margin-bottom:20px; margin-top:-10px;">1 bulan</div>
+                        
+                        <label style="display:flex; align-items:center; gap:12px; padding:16px; background:var(--bg-card); border:1px solid var(--border); border-radius:10px; cursor:pointer; user-select:none; margin-bottom: 16px;">
+                            <input type="checkbox" id="chkAllStock" style="width:16px; height: 16px; accent-color: var(--primary);" onchange="toggleAllStock(this)">
+                            <span style="font-weight:700; flex:1; font-size:11px; text-transform:uppercase; letter-spacing: 1px; color: #fff;">PILIH SEMUA</span>
+                            <span id="selCount" style="color:var(--danger); font-weight:700; font-size:11px; display:none;">0 TERPILIH</span>
+                            <button class="btn btn-danger-outline" style="padding:6px 16px; font-size:10px; font-weight:700; display:none;" id="btnDeleteSelected" onclick="submitDeleteStock()">HAPUS TERPILIH</button>
+                        </label>
+                        
+                        <div id="stockLinesContainer" style="max-height: 320px; overflow-y:auto; display:flex; flex-direction:column; gap:12px; padding-right: 8px;">
+                            <!-- rows appended dynamically -->
+                        </div>
+                        
+                        <input type="hidden" id="viewStockPid" value="">
+                    </div>
+                    <div class="modal-footer" style="justify-content: center;">
+                        <button class="btn btn-primary" style="width:100%; justify-content: center;" onclick="closeModal('modalViewStock')">SELESAI</button>
+                    </div>
+                </div>
+            </div>
+
+            <script>
+                // Load injected data
+                let catalogData = decodeURIComponent("{{CATALOG_DATA}}");
+                let catalogs = {};
+                try { catalogs = JSON.parse(catalogData); } catch(e) {}
+                
+                function renderCatalogs() {
+                    let html = '';
+                    let hasData = false;
+                    for (let cat in catalogs) {
+                        hasData = true;
+                        let prods = catalogs[cat];
+                        let totalStock = prods.reduce((sum, p) => sum + (p.stocks ? p.stocks.length : 0), 0);
+                        let safeClass = totalStock > 0 ? 'color: var(--primary); background: rgba(56, 189, 248, 0.1); border-color: rgba(56, 189, 248, 0.2);' : 'color: var(--danger); background: rgba(244, 63, 94, 0.1); border-color: rgba(244, 63, 94, 0.2);';
+                        
+                        let accordionHtml = '';
+                        prods.forEach(p => {
+                            let stockCount = p.stocks ? p.stocks.length : 0;
+                            let stockCol = stockCount > 0 ? 'var(--primary)' : 'var(--danger)';
+                            
+                            accordionHtml += `
+                                <div style="display:flex; justify-content:space-between; align-items:center; padding: 12px 16px; background: rgba(255,255,255,0.03); border-radius: 8px; margin-bottom: 8px;">
+                                    <div style="flex:1;">
+                                        <div style="font-size:12px; font-weight:700; color:#fff; margin-bottom:4px;">${p.name}</div>
+                                        <div style="font-size:10px; color:var(--text-muted);">${p.desc || 'Tanpa deskripsi'}</div>
+                                    </div>
+                                    <div style="font-size:14px; font-weight:700; color:${stockCol}; margin-right: 16px;">${stockCount}</div>
+                                    <div style="display:flex; flex-direction:column; gap:8px;">
+                                        <button class="btn btn-outline" style="padding: 6px; font-size:12px;" onclick="openViewStock('${p.id}')"><i class="fa-solid fa-search"></i></button>
+                                        <button class="btn btn-primary" style="padding: 6px; font-size:12px;" onclick="openAddStock('${p.id}')"><i class="fa-solid fa-plus"></i></button>
+                                    </div>
+                                </div>
+                            `;
+                        });
+                        
+                        let catId = btoa(cat).replace(/=/g,'');
+                        
+                        html += `
+                        <div class="product-card" style="justify-content: space-between;">
+                            <div style="display:flex; justify-content:space-between; align-items:flex-start; margin-bottom: 16px;">
+                                <div>
+                                    <div class="pc-title">${cat}</div>
+                                    <div class="pc-subtitle" style="display:flex; align-items:center; gap:6px;"><i class="fa-solid fa-layer-group"></i> ${prods.length} VARIAN TERDAFTAR</div>
+                                </div>
+                                <div style="padding: 6px 12px; border-radius: 8px; font-size: 14px; font-weight: 700; font-family: var(--font-heading); font-style: italic; border: 1px solid transparent; ${safeClass}">
+                                    ${totalStock} READY STOCK
+                                </div>
+                            </div>
+                            
+                            <div id="acc_${catId}" style="display:none; flex-direction:column; margin-bottom: 16px; border-top: 1px solid var(--border); padding-top: 16px;">
+                                ${accordionHtml}
+                            </div>
+                            
+                            <button class="btn btn-outline" style="width: 100%; justify-content: center; background: rgba(0,0,0,0.2); border-color: var(--border-light);" onclick="toggleAccordion('${catId}')">
+                                MANAGE STOCK <i class="fa-solid fa-chevron-down" id="icon_${catId}"></i>
+                            </button>
+                        </div>
+                        `;
+                    }
+                    if(!hasData) html = `<div style="grid-column: 1 / -1; padding:40px; text-align:center; color:var(--text-muted);">Belum ada produk stok.</div>`;
+                    document.getElementById('accordionContainer').innerHTML = html;
+                }
+                
+                function toggleAccordion(btoaCat) {
+                    let content = document.getElementById('acc_' + btoaCat);
+                    let icon = document.getElementById('icon_' + btoaCat);
+                    if (content.style.display === 'flex') {
+                        content.style.display = 'none';
+                        icon.className = 'fa-solid fa-chevron-down';
+                    } else {
+                        content.style.display = 'flex';
+                        icon.className = 'fa-solid fa-chevron-up';
+                    }
+                }
+                
+                function getProductById(id) {
+                    for(let cat in catalogs) {
+                        let p = catalogs[cat].find(x => x.id === id);
+                        if(p) return p;
+                    }
+                    return null;
+                }
+
+                function openAddStock(pid) {
+                    let p = getProductById(pid);
+                    if(!p) return;
+                    document.getElementById('addStockPid').value = pid;
+                    document.getElementById('taStockLines').value = '';
+                    document.getElementById('lineCount').innerText = '0';
+                    document.getElementById('modalAddStock').style.display = 'flex';
+                }
+                
+                function updateLineCount() {
+                    let txt = document.getElementById('taStockLines').value;
+                    let lines = txt.split('\n').filter(s => s.trim().length > 0);
+                    document.getElementById('lineCount').innerText = lines.length;
+                }
+
+                function submitAddStock() {
+                    let pid = document.getElementById('addStockPid').value;
+                    let txt = document.getElementById('taStockLines').value;
+                    let lines = txt.split('\n').filter(s => s.trim().length > 0);
+                    if(lines.length === 0) return alert('Tidak ada baris stok yang valid');
+                    
+                    document.getElementById('btnSimpanStock').innerText = "MENYIMPAN...";
+                    fetch('/api/stock/add', {
+                        method: 'POST',
+                        headers: {'Content-Type': 'application/json'},
+                        body: JSON.stringify({productId: pid, stockLines: lines})
+                    }).then(res => res.json()).then(data => {
+                        window.location.reload();
+                    }).catch(e => { alert('Gagal memproses koneksi'); window.location.reload(); });
+                }
+
+                function openViewStock(pid) {
+                    let p = getProductById(pid);
+                    if(!p) return;
+                    document.getElementById('viewStockPid').value = pid;
+                    document.getElementById('vsVariantName').innerText = p.name;
+                    
+                    let lines = p.stocks || [];
+                    let html = '';
+                    lines.forEach((l, i) => {
+                        let textToDisplay = l;
+                        let expInfo = "";
+                        if (typeof l === 'object' && l !== null) {
+                            textToDisplay = Object.values({
+                                email: l.email || "",
+                                pw: l.pw || "",
+                                twoFA: l.twoFA || "",
+                                pin: l.pin || "",
+                                profile: l.profile || ""
+                            }).join("|").replace(/\|+$/, "");
+                            
+                            if (l.expDays && l.expDays > 0) {
+                                const expiresAt = (l.addedAt || Date.now()) + (l.expDays * 86400000);
+                                const hoursLeft = Math.max(0, Math.floor((expiresAt - Date.now()) / 3600000));
+                                expInfo = `<span style="background:var(--danger);color:#fff;padding:2px 6px;border-radius:4px;font-size:10px;margin-left:8px;font-weight:bold;">⏳ Exp dalam: ${hoursLeft} Jam</span>`;
+                            }
+                        }
+                        html += `
+                        <label style="display:flex; align-items:center; gap:12px; padding:12px 16px; background:rgba(0,0,0,0.2); border:1px solid var(--border-light); border-radius:8px; cursor:pointer; user-select:none; transition: 0.2s;">
+                            <input type="checkbox" class="chk-stock" style="width:16px; height:16px; accent-color: var(--primary);" value="${i}" onchange="updateDeleteCount()">
+                            <span style="font-family:'Courier New', monospace; font-size:12px; color:var(--text-main); word-break:break-all; flex:1;">${escapeHtmlForText(textToDisplay)} ${expInfo}</span>
+                        </label>
+                        `;
+                    });
+                    if(lines.length === 0) html = '<div style="color:var(--text-muted); text-align:center; padding:30px; font-size:12px;">Stok kosong</div>';
+                    
+                    document.getElementById('stockLinesContainer').innerHTML = html;
+                    document.getElementById('chkAllStock').checked = false;
+                    updateDeleteCount();
+                    document.getElementById('modalViewStock').style.display = 'flex';
+                }
+                
+                function escapeHtmlForText(text) {
+                    return text.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
+                }
+                function escapeHtmlForVal(text) {
+                    return text.replace(/"/g, "&quot;");
+                }
+
+                function toggleAllStock(source) {
+                    let chks = document.querySelectorAll('.chk-stock');
+                    chks.forEach(c => c.checked = source.checked);
+                    updateDeleteCount();
+                }
+                
+                function updateDeleteCount() {
+                    let count = document.querySelectorAll('.chk-stock:checked').length;
+                    let selCountEl = document.getElementById('selCount');
+                    let btnDelEl = document.getElementById('btnDeleteSelected');
+                    if(count > 0) {
+                        selCountEl.style.display = 'inline-block';
+                        selCountEl.innerText = count + ' TERPILIH';
+                        btnDelEl.style.display = 'block';
+                    } else {
+                        selCountEl.style.display = 'none';
+                        btnDelEl.style.display = 'none';
+                    }
+                }
+
+                function submitDeleteStock() {
+                    let pid = document.getElementById('viewStockPid').value;
+                    let chks = document.querySelectorAll('.chk-stock:checked');
+                    if(chks.length === 0) return;
+                    
+                    let linesToDelete = Array.from(chks).map(c => c.value);
+                    let btnDelEl = document.getElementById('btnDeleteSelected');
+                    btnDelEl.innerText = 'MENGHAPUS...';
+                    
+                    fetch('/api/stock/delete', {
+                        method: 'POST',
+                        headers: {'Content-Type': 'application/json'},
+                        body: JSON.stringify({productId: pid, linesToDelete: linesToDelete})
+                    }).then(res => res.json()).then(data => {
+                        window.location.reload();
+                    }).catch(e => { alert('Gagal memproses koneksi'); window.location.reload(); });
+                }
+
+                document.addEventListener('DOMContentLoaded', () => {
+                    const searchInputs = document.querySelectorAll('.search-bar input');
+                    searchInputs.forEach(input => {
+                        input.addEventListener('input', (e) => {
+                            let val = e.target.value.toLowerCase();
+                            document.querySelectorAll('.product-card').forEach(card => {
+                                let title = card.querySelector('.pc-title').innerText.toLowerCase();
+                                card.style.display = title.includes(val) ? 'flex' : 'none';
+                            });
+                            searchInputs.forEach(other => { if(other !== input) other.value = e.target.value; });
+                        });
+                    });
+                });
+
+                function closeModal(id) {
+                    document.getElementById(id).style.display = 'none';
+                }
+                
+                window.onload = renderCatalogs;
+            </script>
+        </div>
+    </div>
+
+</body>
+</html>

@@ -1,0 +1,266 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Voucher & Promo - Movabi Console</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="/style.css">
+</head>
+<body>
+
+    <div class="sidebar-overlay" onclick="document.querySelector('.sidebar').classList.remove('show')"></div>
+    <div class="sidebar">
+        <div class="sidebar-header">
+            <div class="logo-icon">M</div>
+            Movabi
+        </div>
+        <div class="sidebar-menu">
+            <div class="menu-lbl">Store Operations</div>
+            <a href="/dashboard" class="menu-item"><i class="fa-solid fa-shapes" style="width:20px"></i> Dashboard</a>
+            <a href="/my_produk" class="menu-item"><i class="fa-solid fa-cube" style="width:20px"></i> My Produk</a>
+            <a href="/kelola_stock" class="menu-item"><i class="fa-solid fa-box-open" style="width:20px"></i> Kelola Stock</a>
+            <a href="/voucher_promo" class="menu-item active"><i class="fa-solid fa-ticket" style="width:20px"></i> Voucher & Promo</a>
+            <a href="/broadcast" class="menu-item"><i class="fa-solid fa-paper-plane" style="width:20px"></i> Broadcast</a>
+            
+            <div class="menu-lbl" style="margin-top: 24px;">System Administration</div>
+            <a href="/users" class="menu-item"><i class="fa-regular fa-user" style="width:20px"></i> Users & Saldo</a>
+            <a href="/settings" class="menu-item"><i class="fa-solid fa-gear" style="width:20px"></i> Settings</a>
+        </div>
+    </div>
+
+    <div class="main-wrapper">
+        <div class="topbar">
+            <button id="mobile-menu-btn" class="mobile-menu-btn" onclick="document.querySelector('.sidebar').classList.toggle('show')"><i class="fa-solid fa-bars"></i></button>
+            <div class="top-title">COUPONS</div>
+            <div class="topbar-right">
+                <div class="search-bar">
+                    <i class="fa-solid fa-search text-muted"></i>
+                    <input type="text" placeholder="Cari data...">
+                </div>
+                <a href="#" class="top-icon-btn">
+                    <i class="fa-solid fa-bell"></i>
+                    <div class="badge"></div>
+                </a>
+                <a href="/logout" class="btn-logout"><i class="fa-solid fa-power-off"></i> KELUAR</a>
+                <div class="user-profile">
+                    <span>admin</span>
+                    <div class="avatar"><i class="fa-solid fa-user"></i></div>
+                </div>
+            </div>
+        </div>
+
+        <div class="content">
+            <div class="page-header" style="align-items: center;">
+                <div class="page-title">
+                    <h1>Voucher & Kupon Promo</h1>
+                    <p>Buat dan kelola kode promo untuk meningkatkan konversi penjualan.</p>
+                </div>
+                <div class="header-actions">
+                    <button class="btn btn-primary" onclick="openModalPromo()"><i class="fa-solid fa-plus"></i> BuAT KUPON BARU</button>
+                </div>
+            </div>
+
+            <div id="promoContainer" class="product-grid" style="grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));">
+                <!-- Promo cards will be injected here -->
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal Form Promo -->
+    <div class="modal-overlay" id="modalPromo">
+        <div class="modal-box">
+            <div class="modal-header">
+                <div class="modal-title">SET PENGATURAN KUPON</div>
+                <button class="modal-close" onclick="closeModal('modalPromo')"><i class="fa-solid fa-xmark"></i></button>
+            </div>
+            <div class="modal-body">
+                <p style="color:var(--text-muted); font-size:11px; margin-bottom:20px; margin-top:-5px;">Definisikan aturan penggunaan kode promo</p>
+                
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px;">
+                    <div class="form-group">
+                        <label>KODE VOUCHER</label>
+                        <input type="text" id="promoCode" class="form-control" placeholder="MISAL: HEMAT20">
+                    </div>
+                    <div class="form-group">
+                        <label>TIPE DISKON</label>
+                        <select id="promoType" class="form-control">
+                            <option value="percent">Persentase (%)</option>
+                            <option value="nominal">Nominal (Rp)</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>NILAI DISKON</label>
+                        <input type="number" id="promoValue" class="form-control" placeholder="0">
+                    </div>
+                    <div class="form-group">
+                        <label>MINIMAL BELANJA</label>
+                        <input type="number" id="promoMin" class="form-control" placeholder="0">
+                    </div>
+                    <div class="form-group">
+                        <label>LIMIT PEMAKAIAN</label>
+                        <input type="number" id="promoLimit" class="form-control" placeholder="100">
+                    </div>
+                    <div class="form-group">
+                        <label>TANGGAL BERLAKU</label>
+                        <input type="date" id="promoExp" class="form-control">
+                    </div>
+                </div>
+                
+                <label style="display:flex; align-items:center; gap:12px; padding:16px; background:var(--bg-main); border:1px solid var(--border); border-radius:8px; cursor:pointer; user-select:none; margin-top:20px;">
+                    <input type="checkbox" id="promoActive" checked style="width:16px; height:16px; accent-color: var(--primary);">
+                    <span style="font-weight:700; flex:1; font-size:12px;">Aktifkan Kode Promo Sekarang</span>
+                </label>
+            </div>
+            <div class="modal-footer" style="justify-content: space-between;">
+                <button class="btn btn-outline" style="flex:1; justify-content: center;" onclick="closeModal('modalPromo')">BATAL</button>
+                <button class="btn btn-primary" style="flex:1; justify-content: center;" id="btnSimpanPromo" onclick="submitPromo()">BUAT KUPON</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let promosData = decodeURIComponent("{{PROMOS_DATA}}");
+        let promos = [];
+        try { promos = JSON.parse(promosData); } catch(e) {}
+        
+        function renderPromos() {
+            let html = '';
+            
+            if(promos.length === 0) {
+                document.getElementById('promoContainer').innerHTML = `<div style="grid-column: 1 / -1; padding:40px; text-align:center; color:var(--text-muted);">Belum ada kupon promo yang aktif.</div>`;
+                return;
+            }
+            
+            promos.forEach(p => {
+                let isActive = p.active;
+                let terpakai = p.used || 0;
+                let subText = p.type === 'percent' ? `${p.value}% OFF` : `RP ${parseInt(p.value).toLocaleString()} OFF`;
+                
+                html += `
+                <div class="voucher-card">
+                    <div class="vc-badge" style="${!isActive ? 'background: rgba(244,63,94,0.1); color: var(--danger); border-color: rgba(244,63,94,0.2);' : ''}">${isActive ? 'ACTIVE' : 'INACTIVE'}</div>
+                    <div class="vc-header">
+                        <div class="vc-icon"><i class="fa-solid fa-tag"></i></div>
+                        <div>
+                            <div class="vc-title">${p.code}</div>
+                            <div class="vc-subtitle">${subText}</div>
+                        </div>
+                    </div>
+                    <div class="vc-boxes">
+                        <div class="vc-box">
+                            <div class="vc-box-lbl">MIN BELANJA</div>
+                            <div class="vc-box-val">Rp ${parseInt(p.min_spend).toLocaleString()}</div>
+                        </div>
+                        <div class="vc-box">
+                            <div class="vc-box-lbl">USAGE STATUS</div>
+                            <div class="vc-box-val">${terpakai} / ${p.limit}</div>
+                        </div>
+                    </div>
+                    <div class="vc-footer">
+                        <div class="vc-exp"><i class="fa-regular fa-calendar"></i> EXP: ${formatDate(p.exp)}</div>
+                        <div style="display:flex; gap:8px;">
+                            <button class="btn btn-outline" style="padding: 8px 12px;" onclick="editPromo('${p.code}')"><i class="fa-solid fa-pen"></i></button>
+                            <button class="btn btn-outline" style="padding: 8px 12px; border-color: rgba(244,63,94,0.3); color: var(--danger); background: rgba(244,63,94,0.05);" onclick="deletePromo('${p.code}')"><i class="fa-solid fa-trash-can"></i></button>
+                        </div>
+                    </div>
+                </div>
+                `;
+            });
+            
+            document.getElementById('promoContainer').innerHTML = html;
+        }
+
+        function formatDate(dateStr) {
+            if(!dateStr) return "Selamanya";
+            let d = new Date(dateStr);
+            if(isNaN(d.getTime())) return dateStr;
+            let day = String(d.getDate()).padStart(2, '0');
+            let mo = String(d.getMonth()+1).padStart(2, '0');
+            return `${day}/${mo}/${d.getFullYear()}`;
+        }
+
+        function openModalPromo() {
+            document.getElementById('promoCode').value = '';
+            document.getElementById('promoCode').readOnly = false;
+            document.getElementById('promoType').value = 'percent';
+            document.getElementById('promoValue').value = '0';
+            document.getElementById('promoMin').value = '0';
+            document.getElementById('promoLimit').value = '100';
+            document.getElementById('promoExp').value = '';
+            document.getElementById('promoActive').checked = true;
+            document.getElementById('btnSimpanPromo').innerText = 'BUAT KUPON';
+            
+            document.getElementById('modalPromo').style.display = 'flex';
+        }
+
+        function editPromo(code) {
+            let p = promos.find(x => x.code === code);
+            if(!p) return;
+            
+            document.getElementById('promoCode').value = p.code;
+            document.getElementById('promoCode').readOnly = true;
+            document.getElementById('promoType').value = p.type;
+            document.getElementById('promoValue').value = p.value;
+            document.getElementById('promoMin').value = p.min_spend;
+            document.getElementById('promoLimit').value = p.limit;
+            document.getElementById('promoExp').value = p.exp || '';
+            document.getElementById('promoActive').checked = p.active;
+            document.getElementById('btnSimpanPromo').innerText = 'SIMPAN KUPON';
+            
+            document.getElementById('modalPromo').style.display = 'flex';
+        }
+
+        function submitPromo() {
+            let code = document.getElementById('promoCode').value.trim().toUpperCase();
+            if(!code) return alert('Kode voucher tidak boleh kosong');
+            
+            let payload = {
+                code: code,
+                type: document.getElementById('promoType').value,
+                value: parseInt(document.getElementById('promoValue').value) || 0,
+                min_spend: parseInt(document.getElementById('promoMin').value) || 0,
+                limit: parseInt(document.getElementById('promoLimit').value) || 0,
+                exp: document.getElementById('promoExp').value,
+                active: document.getElementById('promoActive').checked
+            };
+            
+            let btn = document.getElementById('btnSimpanPromo');
+            btn.innerText = 'MENYIMPAN...';
+            
+            fetch('/api/promo/simpan', {
+                method: 'POST',
+                headers: {'Content-Type': 'application/json'},
+                body: JSON.stringify(payload)
+            }).then(res => res.json()).then(data => {
+                if(data.success) {
+                    window.location.reload();
+                } else {
+                    alert('Gagal: ' + data.error);
+                    btn.innerText = 'SIMPAN KUPON';
+                }
+            }).catch(e => { alert('Gagal memproses koneksi'); window.location.reload(); });
+        }
+
+        function deletePromo(code) {
+            if(!confirm('Anda yakin ingin menghapus promo ' + code + '?')) return;
+            
+            fetch('/api/promo/hapus', {
+                method: 'POST',
+                headers: {'Content-Type': 'application/json'},
+                body: JSON.stringify({code: code})
+            }).then(res => res.json()).then(data => {
+                if(data.success) {
+                    window.location.reload();
+                } else {
+                    alert('Gagal menghapus');
+                }
+            });
+        }
+
+        function closeModal(id) { document.getElementById(id).style.display = 'none'; }
+        
+        window.onload = renderPromos;
+    </script>
+</body>
+</html>

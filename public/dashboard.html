@@ -1,0 +1,259 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard - Movabi Console</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="/style.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+
+    <div class="sidebar-overlay" onclick="document.querySelector('.sidebar').classList.remove('show')"></div>
+    <div class="sidebar">
+        <div class="sidebar-header">
+            <div class="logo-icon">M</div>
+            Movabi
+        </div>
+        <div class="sidebar-menu">
+            <div class="menu-lbl">Store Operations</div>
+            <a href="/dashboard" class="menu-item active"><i class="fa-solid fa-shapes" style="width:20px"></i> Dashboard</a>
+            <a href="/my_produk" class="menu-item"><i class="fa-solid fa-cube" style="width:20px"></i> My Produk</a>
+            <a href="/kelola_stock" class="menu-item"><i class="fa-solid fa-box-open" style="width:20px"></i> Kelola Stock</a>
+            <a href="/voucher_promo" class="menu-item"><i class="fa-solid fa-ticket" style="width:20px"></i> Voucher & Promo</a>
+            <a href="/broadcast" class="menu-item"><i class="fa-solid fa-paper-plane" style="width:20px"></i> Broadcast</a>
+            
+            <div class="menu-lbl" style="margin-top: 24px;">System Administration</div>
+            <a href="/users" class="menu-item"><i class="fa-regular fa-user" style="width:20px"></i> Users & Saldo</a>
+            <a href="/settings" class="menu-item"><i class="fa-solid fa-gear" style="width:20px"></i> Settings</a>
+        </div>
+    </div>
+
+    <div class="main-wrapper">
+        <div class="topbar">
+            <button id="mobile-menu-btn" class="mobile-menu-btn" onclick="document.querySelector('.sidebar').classList.toggle('show')"><i class="fa-solid fa-bars"></i></button>
+            <div class="top-title">DASHBOARD</div>
+            <div class="topbar-right">
+                <div class="search-bar">
+                    <i class="fa-solid fa-search text-muted"></i>
+                    <input type="text" placeholder="Cari data...">
+                </div>
+                <a href="#" class="top-icon-btn">
+                    <i class="fa-solid fa-bell"></i>
+                    <div class="badge"></div>
+                </a>
+                <a href="/logout" class="btn-logout"><i class="fa-solid fa-power-off"></i> KELUAR</a>
+                <div class="user-profile">
+                    <span>{{USER}}</span>
+                    <div class="avatar"><i class="fa-solid fa-user"></i></div>
+                </div>
+            </div>
+        </div>
+
+        <div class="content">
+            <div class="page-header">
+                <div class="page-title">
+                    <h1>Ikhtisar Sistem</h1>
+                    <p>Status terkini dan performa bot Telegram kamu.</p>
+                </div>
+            </div>
+
+            <div class="stat-grid">
+                <div class="stat-card">
+                    <div class="stat-icon icon-blue"><i class="fa-solid fa-users"></i></div>
+                    <div class="stat-info">
+                        <h3>{{TOTAL_USER}}</h3>
+                        <p>TOTAL PENGGUNA</p>
+                    </div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon icon-purple"><i class="fa-solid fa-box-open"></i></div>
+                    <div class="stat-info">
+                        <h3>{{TOTAL_PRODUK}}</h3>
+                        <p>TOTAL PRODUK</p>
+                    </div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon icon-green"><i class="fa-solid fa-arrow-trend-up"></i></div>
+                    <div class="stat-info">
+                        <h3>{{TOTAL_SALES}}</h3>
+                        <p>TOTAL TRANSAKSI</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="grid-2">
+                <div class="panel">
+                    <div class="panel-title">
+                        <span>ANALISIS PENJUALAN</span>
+                        <div style="display:flex; gap:10px;">
+                            <button id="btn-7days" onclick="updateChart(7)" class="btn btn-primary" style="padding: 6px 12px; font-size: 10px; box-shadow: none;">7 DAYS</button>
+                            <button id="btn-30days" onclick="updateChart(30)" class="btn btn-outline" style="padding: 6px 12px; font-size: 10px; border:none;">30 DAYS</button>
+                        </div>
+                    </div>
+                    <div class="panel-subtitle" style="margin-top: -15px; margin-bottom: 20px;">Estimasi pendapatan kotor</div>
+                    
+                    <div style="position: relative; height: 250px; width: 100%;">
+                        <canvas id="salesChart"></canvas>
+                    </div>
+                </div>
+                
+                <div class="panel">
+                    <div class="panel-title">QUICK TOOLS</div>
+                    <p style="color: var(--text-muted); font-size: 12px; margin-bottom: 24px; line-height: 1.6;">
+                        Manajemen penuh akan dirilis di versi mendatang. Gunakan Telegram untuk menambah stok secara massal.
+                    </p>
+                    <div style="display: flex; flex-direction: column; gap: 12px; margin-top: auto;">
+                         <button onclick="backupData(this)" class="btn" style="width: 100%; justify-content: center; background: var(--primary); color: white;"><i class="fa-solid fa-download"></i> BACKUP DATA</button>
+                         <button onclick="location.href='/log'" class="btn btn-outline" style="width: 100%; justify-content: center;"><i class="fa-solid fa-list"></i> LIHAT SEMUA LOG</button>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="panel" style="margin-bottom: 30px;">
+                 <div class="panel-title">
+                        <span><i class="fa-solid fa-fire text-warning" style="color:var(--warning)"></i> PRODUK TERPOPULER</span>
+                        <span class="panel-subtitle">BERDASARKAN VOLUME</span>
+                 </div>
+                 <div style="text-align:center; padding: 40px; color: var(--border-light); font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 1px;">
+                     Belum ada data penjualan
+                 </div>
+            </div>
+
+        </div>
+    </div>
+
+
+    <script>
+        let salesChartInstance = null;
+        let chartDataCache = { labels: [], values: [] };
+
+        async function initChart() {
+            try {
+                const res = await fetch('/api/chart');
+                const data = await res.json();
+                if (data.success) {
+                    chartDataCache = { labels: data.labels, values: data.values };
+                    renderChart(7); // Default 7 hari
+                }
+            } catch (e) {
+                console.error("Gagal memuat data chart");
+            }
+        }
+
+        function renderChart(days) {
+            const ctx = document.getElementById('salesChart').getContext('2d');
+            
+            // Slice data berdasarkan hari
+            const sliceStart = Math.max(0, chartDataCache.labels.length - days);
+            const labels = chartDataCache.labels.slice(sliceStart);
+            const values = chartDataCache.values.slice(sliceStart);
+
+            if (salesChartInstance) salesChartInstance.destroy();
+
+            const gradient = ctx.createLinearGradient(0, 0, 0, 250);
+            gradient.addColorStop(0, 'rgba(56, 189, 248, 0.4)');
+            gradient.addColorStop(1, 'rgba(56, 189, 248, 0.0)');
+
+            salesChartInstance = new Chart(ctx, {
+                type: 'line',
+                data: {
+                    labels: labels,
+                    datasets: [{
+                        label: 'Penjualan Kotor',
+                        data: values,
+                        borderColor: '#38bdf8',
+                        backgroundColor: gradient,
+                        borderWidth: 3,
+                        pointBackgroundColor: '#fff',
+                        pointBorderColor: '#38bdf8',
+                        pointBorderWidth: 2,
+                        pointRadius: 4,
+                        pointHoverRadius: 6,
+                        fill: true,
+                        tension: 0.4
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: { display: false },
+                        tooltip: {
+                            backgroundColor: 'rgba(15, 23, 42, 0.9)',
+                            titleFont: { size: 13, family: 'Inter' },
+                            bodyFont: { size: 14, weight: 'bold', family: 'Inter' },
+                            padding: 12,
+                            cornerRadius: 8,
+                            displayColors: false,
+                            callbacks: {
+                                label: function(context) {
+                                    return 'Rp ' + context.parsed.y.toLocaleString();
+                                }
+                            }
+                        }
+                    },
+                    scales: {
+                        x: {
+                            grid: { display: false, drawBorder: false },
+                            ticks: { color: '#94a3b8', font: { family: 'Inter', size: 10 } }
+                        },
+                        y: {
+                            grid: { color: 'rgba(255, 255, 255, 0.05)', drawBorder: false },
+                            ticks: {
+                                color: '#94a3b8', 
+                                font: { family: 'Inter', size: 10 },
+                                callback: function(value) {
+                                    if(value >= 1000000) return (value/1000000) + 'M';
+                                    if(value >= 1000) return (value/1000) + 'K';
+                                    return value;
+                                }
+                            },
+                            beginAtZero: true
+                        }
+                    }
+                }
+            });
+        }
+
+        function updateChart(days) {
+            if(days === 7) {
+                document.getElementById('btn-7days').className = 'btn btn-primary';
+                document.getElementById('btn-7days').style.border = 'none';
+                document.getElementById('btn-7days').style.boxShadow = 'none';
+                document.getElementById('btn-30days').className = 'btn btn-outline';
+                document.getElementById('btn-30days').style.border = 'none';
+            } else {
+                document.getElementById('btn-30days').className = 'btn btn-primary';
+                document.getElementById('btn-30days').style.border = 'none';
+                document.getElementById('btn-30days').style.boxShadow = 'none';
+                document.getElementById('btn-7days').className = 'btn btn-outline';
+                document.getElementById('btn-7days').style.border = 'none';
+            }
+            renderChart(days);
+        }
+
+        window.addEventListener('load', initChart);
+
+        async function backupData(btn) {
+            const originalText = btn.innerHTML;
+            btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> MEMPROSES...';
+            btn.disabled = true;
+            try {
+                const res = await fetch('/api/backup', { method: 'POST' });
+                const data = await res.json();
+                if (data.success) {
+                    alert('Sukses! ' + data.message);
+                } else {
+                    alert('Gagal: ' + (data.error || 'Unknown error'));
+                }
+            } catch (e) {
+                alert('Terjadi kesalahan jaringan.');
+            }
+            btn.innerHTML = originalText;
+            btn.disabled = false;
+        }
+    </script>
+</body>
+</html>

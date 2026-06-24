@@ -1,0 +1,243 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Settings - Movabi Console</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="/style.css">
+    <style>
+        .set-card { background: var(--bg-card); border: 1px solid var(--border); border-radius: 20px; padding: 24px; box-shadow: var(--shadow-card); }
+        .set-header { display: flex; align-items: center; gap: 12px; margin-bottom: 24px; }
+        .set-icon { width: 36px; height: 36px; border-radius: 10px; background: rgba(74,222,128,0.1); color: var(--success); display: flex; justify-content: center; align-items: center; font-size: 16px; border: 1px solid rgba(74,222,128,0.2); }
+        .set-title { font-family: var(--font-heading); font-size: 14px; font-weight: 700; font-style: italic; color: #fff; text-transform: uppercase; letter-spacing: 1px; }
+        .set-subtitle { font-size: 10px; font-weight: 700; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.5px; }
+        
+        .mtn-box { background: var(--bg-main); border: 1px solid var(--border); border-radius: 16px; padding: 16px 20px; display: flex; justify-content: space-between; align-items: center; margin-bottom: 24px; }
+        .mtn-info { display: flex; align-items: center; gap: 16px; }
+        .mtn-icon { width: 36px; height: 36px; border-radius: 50%; background: rgba(74,222,128,0.1); color: var(--success); display: flex; justify-content: center; align-items: center; font-size: 16px; border: 1px solid rgba(74,222,128,0.2); }
+        .mtn-title { font-size: 12px; font-weight: 800; color: #fff; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 4px; }
+        .mtn-desc { font-size: 10px; color: var(--text-muted); font-weight: 600; text-transform: uppercase; }
+        
+        /* Toggle Switch */
+        .switch { position: relative; display: inline-block; width: 48px; height: 24px; }
+        .switch input { opacity: 0; width: 0; height: 0; }
+        .slider { position: absolute; cursor: pointer; top: 0; left: 0; right: 0; bottom: 0; background-color: var(--bg-card); transition: .4s; border-radius: 34px; border: 1px solid var(--border); }
+        .slider:before { position: absolute; content: ""; height: 16px; width: 16px; left: 3px; bottom: 3px; background-color: var(--text-muted); transition: .4s; border-radius: 50%; }
+        input:checked + .slider { background-color: rgba(56, 189, 248, 0.2); border-color: var(--primary); }
+        input:checked + .slider:before { background-color: var(--primary); transform: translateX(24px); box-shadow: 0 0 10px var(--primary); }
+        
+        .ftr-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; margin-bottom: 24px; }
+        .ftr-btn { background: var(--bg-main); border: 1px solid var(--border); border-radius: 12px; padding: 16px 12px; text-align: center; cursor: pointer; transition: 0.2s; color: var(--text-muted); }
+        .ftr-btn:hover { border-color: rgba(74,222,128,0.5); color: var(--success); }
+        .ftr-btn.active { border-color: var(--success); color: var(--success); background: rgba(74,222,128,0.05); }
+        .ftr-btn i { font-size: 18px; margin-bottom: 12px; display: block; }
+        .ftr-btn span { font-size: 10px; font-weight: 800; text-transform: uppercase; letter-spacing: 0.5px; }
+        
+        .rwd-box { background: var(--bg-main); border: 1px solid var(--border); border-radius: 16px; padding: 20px; }
+        .rwd-header { display: flex; align-items: center; gap: 12px; margin-bottom: 20px; }
+        .rwd-icon { width: 32px; height: 32px; border-radius: 8px; background: rgba(56,189,248,0.1); color: var(--primary); display: flex; justify-content: center; align-items: center; font-size: 14px; }
+        .rwd-title { font-size: 11px; font-weight: 800; color: #fff; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 2px; }
+        .rwd-desc { font-size: 9px; font-weight: 700; color: var(--text-muted); text-transform: uppercase; }
+        
+        .rwd-input-wrap { background: var(--bg-card); border: 1px solid var(--border); border-radius: 12px; padding: 16px 24px; display: flex; align-items: center; gap: 16px; transition: 0.2s; }
+        .rwd-input-wrap:focus-within { border-color: var(--primary); box-shadow: 0 0 0 2px var(--primary-glow); }
+        .rwd-curr { font-family: var(--font-heading); font-size: 24px; font-weight: 700; font-style: italic; color: var(--text-muted); }
+        .rwd-input-wrap input { background: transparent; border: none; outline: none; color: #fff; font-family: var(--font-heading); font-size: 24px; font-weight: 700; font-style: italic; width: 100%; }
+        
+        .term-card { background: var(--bg-card); border: 1px solid var(--border); border-radius: 20px; padding: 24px; text-align: center; }
+        .term-title { font-size: 10px; font-weight: 800; color: #fff; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 20px; text-align: left; }
+        .term-btn { background: rgba(56, 189, 248, 0.8); color: #fff; font-family: var(--font-heading); font-size: 16px; font-weight: 700; text-transform: uppercase; letter-spacing: 1px; padding: 16px; border-radius: 12px; border: none; width: 100%; cursor: pointer; transition: 0.3s; margin-bottom: 16px; line-height: 1.4; display: flex; align-items: center; justify-content: center; gap: 10px; box-shadow: 0 0 20px rgba(56, 189, 248, 0.2); }
+        .term-btn:hover { background: var(--primary); box-shadow: 0 0 25px rgba(56, 189, 248, 0.4); transform: translateY(-2px); color: #000; }
+        .term-desc { font-size: 9px; font-weight: 700; color: var(--text-muted); text-transform: uppercase; line-height: 1.6; letter-spacing: 0.5px; padding: 0 10px; }
+    </style>
+</head>
+<body>
+
+    <div class="sidebar-overlay" onclick="document.querySelector('.sidebar').classList.remove('show')"></div>
+    <div class="sidebar">
+        <div class="sidebar-header">
+            <div class="logo-icon">M</div>
+            Movabi
+        </div>
+        <div class="sidebar-menu">
+            <div class="menu-lbl">Store Operations</div>
+            <a href="/dashboard" class="menu-item"><i class="fa-solid fa-shapes" style="width:20px"></i> Dashboard</a>
+            <a href="/my_produk" class="menu-item"><i class="fa-solid fa-cube" style="width:20px"></i> My Produk</a>
+            <a href="/kelola_stock" class="menu-item"><i class="fa-solid fa-box-open" style="width:20px"></i> Kelola Stock</a>
+            <a href="/voucher_promo" class="menu-item"><i class="fa-solid fa-ticket" style="width:20px"></i> Voucher & Promo</a>
+            <a href="/broadcast" class="menu-item"><i class="fa-solid fa-paper-plane" style="width:20px"></i> Broadcast</a>
+            
+            <div class="menu-lbl" style="margin-top: 24px;">System Administration</div>
+            <a href="/users" class="menu-item"><i class="fa-regular fa-user" style="width:20px"></i> Users & Saldo</a>
+            <a href="/settings" class="menu-item active"><i class="fa-solid fa-gear" style="width:20px"></i> Settings</a>
+        </div>
+    </div>
+
+    <div class="main-wrapper">
+        <div class="topbar">
+            <button id="mobile-menu-btn" class="mobile-menu-btn" onclick="document.querySelector('.sidebar').classList.toggle('show')"><i class="fa-solid fa-bars"></i></button>
+            <div class="top-title">SETTINGS</div>
+            <div class="topbar-right">
+                <div class="search-bar">
+                    <i class="fa-solid fa-search text-muted"></i>
+                    <input type="text" placeholder="Cari data...">
+                </div>
+                <a href="#" class="top-icon-btn">
+                    <i class="fa-solid fa-bell"></i>
+                    <div class="badge"></div>
+                </a>
+                <a href="/logout" class="btn-logout"><i class="fa-solid fa-power-off"></i> KELUAR</a>
+                <div class="user-profile">
+                    <span>admin</span>
+                    <div class="avatar"><i class="fa-solid fa-user"></i></div>
+                </div>
+            </div>
+        </div>
+
+        <div class="content">
+            <div class="page-header">
+                <div class="page-title">
+                    <h1>Sistem Konfigurasi</h1>
+                    <p>Kelola otorisasi bot, mode pemeliharaan, dan parameter global.</p>
+                </div>
+            </div>
+
+            <div class="grid-2">
+                <!-- Left Panel -->
+                <div class="set-card">
+                    <div class="set-header">
+                        <div class="set-icon"><i class="fa-solid fa-gear"></i></div>
+                        <div>
+                            <div class="set-title">PENGATURAN FITUR & TOGGLES</div>
+                            <div class="set-subtitle">AKTIFKAN ATAU MATIKAN MODUL SISTEM</div>
+                        </div>
+                    </div>
+                    
+                    <div class="mtn-box">
+                        <div class="mtn-info">
+                            <div class="mtn-icon"><i class="fa-solid fa-check"></i></div>
+                            <div>
+                                <div class="mtn-title">MAINTENANCE PROTOCOL</div>
+                                <div class="mtn-desc">SISTEM BEROPERASI NORMAL</div>
+                            </div>
+                        </div>
+                        <label class="switch">
+                            <input type="checkbox" id="maintenanceToggle">
+                            <span class="slider"></span>
+                        </label>
+                    </div>
+                    
+                    <div class="ftr-grid">
+                        <div class="ftr-btn active" onclick="toggleBtn(this)">
+                            <i class="fa-solid fa-user-group"></i>
+                            <span>REFERRAL</span>
+                        </div>
+                        <div class="ftr-btn" onclick="toggleBtn(this)">
+                            <i class="fa-solid fa-globe"></i>
+                            <span>LANGUAGE</span>
+                        </div>
+                        <div class="ftr-btn" onclick="toggleBtn(this)">
+                            <i class="fa-regular fa-face-smile"></i>
+                            <span>STICKERS</span>
+                        </div>
+                    </div>
+                    
+                    <div class="rwd-box">
+                        <div class="rwd-header">
+                            <div class="rwd-icon"><i class="fa-solid fa-wallet"></i></div>
+                            <div>
+                                <div class="rwd-title">REFERRAL REWARD CONFIG</div>
+                                <div class="rwd-desc">BONUS DIKREDITKAN SECARA AKUMULASI</div>
+                            </div>
+                        </div>
+                        
+                        <div class="rwd-input-wrap">
+                            <div class="rwd-curr">Rp</div>
+                            <input type="number" id="referralReward" value="2000" placeholder="0">
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Right Panel -->
+                <div>
+                    <div class="term-card">
+                        <div class="term-title">DEPLOYMENT TERMINAL</div>
+                        <button class="term-btn" onclick="saveSettings()">
+                            <div><i class="fa-solid fa-floppy-disk"></i> SIMPAN<br>PERUBAHAN</div>
+                        </button>
+                        <div class="term-desc">
+                            SEMUA PERUBAHAN AKAN DITERAPKAN SECARA REAL-TIME KE SELURUH INSTANCE BOT.
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+        </div>
+    </div>
+
+    <script>
+        function toggleBtn(el) {
+            el.classList.toggle('active');
+        }
+
+        async function loadSettings() {
+            try {
+                const res = await fetch('/api/settings');
+                const data = await res.json();
+                if (data.success && data.settings) {
+                    const s = data.settings;
+                    document.getElementById('maintenanceToggle').checked = !!s.maintenance;
+                    
+                    if (s.ref_bonus) {
+                        document.getElementById('referralReward').value = s.ref_bonus;
+                    }
+
+                    const ftrBtns = document.querySelectorAll('.ftr-btn');
+                    ftrBtns[0].classList.toggle('active', s.referral !== false);
+                    ftrBtns[1].classList.toggle('active', s.language !== false);
+                    ftrBtns[2].classList.toggle('active', s.sticker !== false);
+                }
+            } catch (e) {
+                console.error(e);
+            }
+        }
+        
+        async function saveSettings() {
+            let btn = document.querySelector('.term-btn');
+            btn.innerHTML = '<div><i class="fa-solid fa-spinner fa-spin"></i> MENYIMPAN...</div>';
+            btn.disabled = true;
+            
+            const ftrBtns = document.querySelectorAll('.ftr-btn');
+            const newSettings = {
+                maintenance: document.getElementById('maintenanceToggle').checked,
+                referral: ftrBtns[0].classList.contains('active'),
+                language: ftrBtns[1].classList.contains('active'),
+                sticker: ftrBtns[2].classList.contains('active'),
+                ref_bonus: parseInt(document.getElementById('referralReward').value) || 0
+            };
+
+            try {
+                const res = await fetch('/api/settings', {
+                    method: 'POST',
+                    headers: {'Content-Type': 'application/json'},
+                    body: JSON.stringify(newSettings)
+                });
+                const data = await res.json();
+                if (data.success) {
+                    alert('Konfigurasi sistem berhasil disimpan!');
+                } else {
+                    alert('Gagal menyimpan: ' + data.error);
+                }
+            } catch (e) {
+                alert('Terjadi kesalahan koneksi.');
+            } finally {
+                btn.innerHTML = '<div><i class="fa-solid fa-floppy-disk"></i> SIMPAN<br>PERUBAHAN</div>';
+                btn.disabled = false;
+            }
+        }
+
+        window.onload = loadSettings;
+    </script>
+</body>
+</html>

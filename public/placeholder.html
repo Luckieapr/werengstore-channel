@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{TITLE}} - Movabi Console</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --bg-main: #0b0f16;
+            --bg-sidebar: #131923;
+            --bg-card: #181f2b;
+            --bg-input: #0f141b;
+            --primary: #38BDF8;
+            --success: #4ADE80;
+            --danger: #F87171;
+            --text-main: #FFFFFF;
+            --text-muted: #9CA3AF;
+            --border: #262e3d;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Inter', sans-serif; }
+        body { background-color: var(--bg-main); color: var(--text-main); display: flex; height: 100vh; overflow: hidden; }
+
+        .sidebar { width: 260px; min-width: 260px; background: var(--bg-sidebar); border-right: 1px solid var(--border); display: flex; flex-direction: column; }
+        .sidebar-header { padding: 24px; font-size: 24px; font-weight: 700; color: var(--primary); border-bottom: 1px solid var(--border); display: flex; align-items: center; gap: 10px; }
+        .sidebar-menu { flex: 1; padding: 20px 0; overflow-y: auto; }
+        .menu-lbl { padding: 10px 24px; font-size: 11px; font-weight: 700; color: #4B5563; text-transform: uppercase; letter-spacing: 0.5px; }
+        .menu-item { padding: 12px 24px; color: var(--text-muted); display: flex; align-items: center; gap: 12px; text-decoration: none; font-size: 14px; font-weight: 500; transition: 0.2s; border-left: 3px solid transparent; }
+        .menu-item:hover, .menu-item.active { background: rgba(56, 189, 248, 0.05); color: var(--primary); border-left: 3px solid var(--primary); }
+
+        .main-wrapper { flex: 1; display: flex; flex-direction: column; overflow: hidden; }
+        .topbar { min-height: 60px; background: var(--bg-sidebar); border-bottom: 1px solid var(--border); display: flex; align-items: center; justify-content: space-between; padding: 0 30px; font-size: 14px;}
+        .top-title { font-weight: 700; color: #fff; letter-spacing: 1px; text-transform: uppercase;}
+        .topbar-right { display: flex; align-items: center; gap: 30px; }
+        
+        .content { flex: 1; padding: 30px; overflow-y: auto; display: flex; justify-content: center; align-items: center; flex-direction: column; text-align: center; }
+        
+        .placeholder-icon { font-size: 64px; color: var(--text-muted); margin-bottom: 20px; opacity: 0.5; }
+        .placeholder-title { font-size: 24px; font-weight: 700; margin-bottom: 10px; }
+        .placeholder-desc { font-size: 14px; color: var(--text-muted); max-width: 400px; margin: 0 auto; line-height: 1.6; }
+        
+    </style>
+</head>
+<body>
+
+    <div class="sidebar-overlay" onclick="document.querySelector('.sidebar').classList.remove('show')"></div>
+    <div class="sidebar">
+        <div class="sidebar-header">
+            <div style="background:var(--primary); color:#000; width:28px; height:28px; border-radius:6px; display:flex; align-items:center; justify-content:center; font-size:14px;">M</div>
+            Movabi
+        </div>
+        <div class="sidebar-menu">
+            <div class="menu-lbl">Store Operations</div>
+            <a href="/dashboard" class="menu-item {{ACT_dashboard}}"><i class="fa-solid fa-shapes" style="width:20px"></i> Dashboard</a>
+
+            <a href="/my_produk" class="menu-item {{ACT_my_produk}}"><i class="fa-solid fa-cube" style="width:20px"></i> My Produk</a>
+            <a href="/kelola_stock" class="menu-item {{ACT_kelola_stock}}"><i class="fa-solid fa-box-open" style="width:20px"></i> Kelola Stock</a>
+            <a href="/voucher_promo" class="menu-item {{ACT_voucher_promo}}"><i class="fa-solid fa-ticket" style="width:20px"></i> Voucher & Promo</a>
+            <a href="/broadcast" class="menu-item {{ACT_broadcast}}"><i class="fa-solid fa-paper-plane" style="width:20px"></i> Broadcast</a>
+            
+            <div class="menu-lbl" style="margin-top: 20px;">System Administration</div>
+            <a href="/users" class="menu-item {{ACT_users}}"><i class="fa-regular fa-user" style="width:20px"></i> Users & Saldo</a>
+            <a href="/settings" class="menu-item {{ACT_settings}}"><i class="fa-solid fa-gear" style="width:20px"></i> Settings</a>
+        </div>
+    </div>
+
+    <div class="main-wrapper">
+        <div class="topbar">
+            <button id="mobile-menu-btn" class="mobile-menu-btn" onclick="document.querySelector('.sidebar').classList.toggle('show')"><i class="fa-solid fa-bars"></i></button>
+            <div class="top-title">{{TITLE}}</div>
+            <div class="topbar-right">
+                <div style="display:flex; align-items:center; gap:10px;">
+                    <div style="text-align:right; line-height:1.2;">
+                        <div style="font-weight:600; color:#fff;">Admin Store</div>
+                        <div style="font-size:10px; color:var(--success);"><span style="display:inline-block; width:6px; height:6px; background:var(--success); border-radius:50%; margin-right:6px; box-shadow:0 0 6px var(--success);"></span>BOT ONLINE</div>
+                    </div>
+                    <div style="width:36px; height:36px; background:var(--primary); color:#000; border-radius:50%; display:flex; justify-content:center; align-items:center; font-weight:bold;">A</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="content">
+            <i class="{{ICON}} placeholder-icon"></i>
+            <h1 class="placeholder-title">{{TITLE}}</h1>
+            <p class="placeholder-desc">Halaman ini sedang dalam tahap pengembangan (Coming Soon). Nantikan pembaruan berikutnya untuk menikmati fitur ini secara penuh.</p>
+        </div>
+    </div>
+
+</body>
+</html>

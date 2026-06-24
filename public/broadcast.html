@@ -1,0 +1,217 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Broadcast - Movabi Console</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="/style.css">
+    <style>
+        .bc-card { background: var(--bg-card); border: 1px solid var(--border); border-radius: 20px; padding: 24px; box-shadow: var(--shadow-card); display: flex; flex-direction: column; }
+        .bc-header { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 24px; }
+        .bc-title { font-family: var(--font-heading); font-size: 24px; font-weight: 700; font-style: italic; color: #fff; text-transform: uppercase; line-height: 1.1; margin-bottom: 4px; }
+        .bc-subtitle { font-size: 11px; color: var(--text-muted); }
+        .bc-badge { background: rgba(56, 189, 248, 0.1); color: var(--primary); padding: 8px 16px; border-radius: 20px; font-size: 11px; font-weight: 700; border: 1px solid rgba(56, 189, 248, 0.2); display: flex; align-items: center; gap: 8px; text-transform: uppercase; }
+        
+        .bc-form-label { font-size: 10px; font-weight: 700; color: var(--text-muted); text-transform: uppercase; letter-spacing: 1px; margin-bottom: 12px; display: block; }
+        .bc-textarea { background: var(--bg-main); border: 1px solid var(--border); border-radius: 12px; color: #fff; padding: 16px; font-size: 13px; width: 100%; min-height: 250px; outline: none; transition: 0.2s; resize: vertical; line-height: 1.6; }
+        .bc-textarea:focus { border-color: var(--primary); box-shadow: 0 0 0 2px var(--primary-glow); }
+        .bc-hint { font-size: 10px; font-weight: 700; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.5px; display: flex; align-items: center; gap: 8px; margin-top: 12px; }
+        
+        .bc-btn { background: rgba(56, 189, 248, 0.8); color: #fff; font-family: var(--font-heading); font-size: 16px; font-weight: 700; text-transform: uppercase; letter-spacing: 1px; padding: 16px; border-radius: 12px; border: none; width: 100%; margin-top: 24px; cursor: pointer; transition: 0.3s; display: flex; align-items: center; justify-content: center; gap: 10px; box-shadow: 0 0 20px rgba(56, 189, 248, 0.2); }
+        .bc-btn:hover { background: var(--primary); box-shadow: 0 0 25px rgba(56, 189, 248, 0.4); transform: translateY(-2px); color: #000; }
+        .bc-btn:disabled { background: var(--border); color: var(--text-muted); cursor: not-allowed; box-shadow: none; transform: none; }
+
+        .rules-card { background: var(--bg-card); border: 1px solid var(--border); border-radius: 20px; padding: 24px; position: relative; overflow: hidden; margin-bottom: 24px; }
+        .rules-glow { position: absolute; left: 0; top: 0; bottom: 0; width: 4px; background: var(--primary); box-shadow: 0 0 15px var(--primary); }
+        .rules-title { font-size: 12px; font-weight: 700; color: #fff; text-transform: uppercase; letter-spacing: 1px; display: flex; align-items: center; gap: 8px; margin-bottom: 20px; }
+        .rule-item { display: flex; gap: 12px; margin-bottom: 16px; font-size: 10px; font-weight: 700; color: var(--text-muted); text-transform: uppercase; line-height: 1.5; letter-spacing: 0.5px; }
+        .rule-num { color: var(--primary); font-size: 12px; }
+
+        .preview-card { background: var(--bg-card); border: 1px solid var(--border); border-radius: 20px; padding: 20px; }
+        .preview-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px; }
+        .preview-title { font-size: 11px; font-weight: 800; color: #fff; text-transform: uppercase; letter-spacing: 1px; }
+        .mac-dots { display: flex; gap: 6px; }
+        .mac-dot { width: 10px; height: 10px; border-radius: 50%; }
+        .mac-red { background: var(--danger); }
+        .mac-yellow { background: var(--warning); }
+        .mac-green { background: var(--success); }
+        .preview-content { font-family: 'Courier New', monospace; font-size: 12px; color: var(--primary); line-height: 1.6; white-space: pre-wrap; word-break: break-word; min-height: 100px; }
+
+        .log-card { background: var(--bg-card); border: 1px solid var(--border); border-radius: 20px; padding: 24px; margin-top: 24px; }
+        .log-title { font-size: 11px; font-weight: 700; color: var(--text-muted); text-transform: uppercase; letter-spacing: 1px; display: flex; align-items: center; gap: 8px; margin-bottom: 24px; }
+        .log-empty { border: 1px dashed var(--border); border-radius: 12px; padding: 40px; text-align: center; color: var(--border-light); font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 1px; }
+    </style>
+</head>
+<body>
+
+    <div class="sidebar-overlay" onclick="document.querySelector('.sidebar').classList.remove('show')"></div>
+    <div class="sidebar">
+        <div class="sidebar-header">
+            <div class="logo-icon">M</div>
+            Movabi
+        </div>
+        <div class="sidebar-menu">
+            <div class="menu-lbl">Store Operations</div>
+            <a href="/dashboard" class="menu-item"><i class="fa-solid fa-shapes" style="width:20px"></i> Dashboard</a>
+            <a href="/my_produk" class="menu-item"><i class="fa-solid fa-cube" style="width:20px"></i> My Produk</a>
+            <a href="/kelola_stock" class="menu-item"><i class="fa-solid fa-box-open" style="width:20px"></i> Kelola Stock</a>
+            <a href="/voucher_promo" class="menu-item"><i class="fa-solid fa-ticket" style="width:20px"></i> Voucher & Promo</a>
+            <a href="/broadcast" class="menu-item active"><i class="fa-solid fa-paper-plane" style="width:20px"></i> Broadcast</a>
+            
+            <div class="menu-lbl" style="margin-top: 24px;">System Administration</div>
+            <a href="/users" class="menu-item"><i class="fa-regular fa-user" style="width:20px"></i> Users & Saldo</a>
+            <a href="/settings" class="menu-item"><i class="fa-solid fa-gear" style="width:20px"></i> Settings</a>
+        </div>
+    </div>
+
+    <div class="main-wrapper">
+        <div class="topbar">
+            <button id="mobile-menu-btn" class="mobile-menu-btn" onclick="document.querySelector('.sidebar').classList.toggle('show')"><i class="fa-solid fa-bars"></i></button>
+            <div class="top-title">BROADCAST</div>
+            <div class="topbar-right">
+                <div class="search-bar">
+                    <i class="fa-solid fa-search text-muted"></i>
+                    <input type="text" placeholder="Cari data...">
+                </div>
+                <a href="#" class="top-icon-btn">
+                    <i class="fa-solid fa-bell"></i>
+                    <div class="badge"></div>
+                </a>
+                <a href="/logout" class="btn-logout"><i class="fa-solid fa-power-off"></i> KELUAR</a>
+                <div class="user-profile">
+                    <span>admin</span>
+                    <div class="avatar"><i class="fa-solid fa-user"></i></div>
+                </div>
+            </div>
+        </div>
+
+        <div class="content">
+            <div style="display: grid; grid-template-columns: 2fr 1fr; gap: 24px;">
+                <!-- Left Panel -->
+                <div class="bc-card">
+                    <div class="bc-header">
+                        <div>
+                            <div class="bc-title">KIRIM BROADCAST</div>
+                            <div class="bc-subtitle">Kirim pesan masal ke seluruh pengguna Telegram.</div>
+                        </div>
+                        <div class="bc-badge"><i class="fa-solid fa-user-group"></i> {{TOTAL_USER}} PENERIMA</div>
+                    </div>
+                    
+                    <label class="bc-form-label">PESAN UTAMA (MARKDOWN SUPPORTED)</label>
+                    <textarea class="bc-textarea" id="bcMessage" placeholder="Tulis pesan brilian anda di sini..." oninput="updatePreview()"></textarea>
+                    
+                    <div class="bc-hint"><i class="fa-solid fa-circle-info" style="color:var(--primary)"></i> GUNAKAN TAG HTML STANDAR UNTUK FORMATTING PESAN.</div>
+                    
+                    <div class="info-box" id="warningBox" style="background: rgba(244,63,94,0.1); border: 1px solid rgba(244,63,94,0.3); color: var(--danger); padding: 12px; border-radius: 8px; font-size: 11px; font-weight: 700; margin-top: 16px; display: none;"></div>
+                    
+                    <button class="bc-btn" id="btnSend" onclick="sendBroadcast()">
+                        <i class="fa-regular fa-paper-plane"></i> MULAI TRANSMISI BROADCAST
+                    </button>
+                </div>
+                
+                <!-- Right Panel -->
+                <div>
+                    <div class="rules-card">
+                        <div class="rules-glow"></div>
+                        <div class="rules-title"><i class="fa-solid fa-circle-info" style="color:var(--primary); font-size: 14px;"></i> ATURAN PROTOKOL</div>
+                        
+                        <div class="rule-item">
+                            <span class="rule-num">01</span>
+                            <span>PESAN AKAN DISIARKAN SECARA SEKUENSIAL KE SELURUH DATABASE USER.</span>
+                        </div>
+                        <div class="rule-item">
+                            <span class="rule-num">02</span>
+                            <span>PASTIKAN API TOKEN MASIH VALID UNTUK MENGHINDARI KEGAGALAN TRANSMISI.</span>
+                        </div>
+                        <div class="rule-item">
+                            <span class="rule-num">03</span>
+                            <span>BATASI FREKUENSI BROADCAST UNTUK MENJAGA REPUTASI BOT DARI DETEKSI SPAM.</span>
+                        </div>
+                    </div>
+                    
+                    <div class="preview-card">
+                        <div class="preview-header">
+                            <div class="preview-title">BOT LIVE PREVIEW</div>
+                            <div class="mac-dots">
+                                <div class="mac-dot mac-red"></div>
+                                <div class="mac-dot mac-yellow"></div>
+                                <div class="mac-dot mac-green"></div>
+                            </div>
+                        </div>
+                        <div class="preview-content" id="previewBox">// Ketik pesan untuk melihat preview transmisi...</div>
+                    </div>
+                </div>
+            </div>
+
+
+        </div>
+    </div>
+
+    <script>
+        function updatePreview() {
+            let msg = document.getElementById('bcMessage').value;
+            let preview = document.getElementById('previewBox');
+            
+            if(!msg.trim()) {
+                preview.style.color = 'var(--border-light)';
+                preview.innerText = '// Ketik pesan untuk melihat preview transmisi...';
+                return;
+            }
+            preview.style.color = 'var(--primary)';
+            
+            // Basic markdown-to-html converter
+            let parsed = msg
+                .replace(/</g, "&lt;").replace(/>/g, "&gt;") // escape HTML first
+                .replace(/\*(.*?)\*/g, "<b>$1</b>")          // *bold*
+                .replace(/\*\*(.*?)\*\*/g, "<b>$1</b>")      // **bold**
+                .replace(/_(.*?)_/g, "<i>$1</i>")            // _italic_
+                .replace(/__(.*?)__/g, "<i>$1</i>")          // __italic__
+                .replace(/`(.*?)`/g, "<span style='background:rgba(56,189,248,0.1); padding:2px 4px; border-radius:4px;'>$1</span>");
+                
+            parsed = parsed
+                .replace(/&lt;b&gt;/g, "<b style='color:#fff'>").replace(/&lt;\/b&gt;/g, "</b>")
+                .replace(/&lt;i&gt;/g, "<i style='color:#fff'>").replace(/&lt;\/i&gt;/g, "</i>")
+                .replace(/&lt;code&gt;/g, "<span style='background:rgba(56,189,248,0.1); padding:2px 4px; border-radius:4px;'>").replace(/&lt;\/code&gt;/g, "</span>")
+                .replace(/&lt;pre&gt;/g, "<pre style='background:rgba(56,189,248,0.1); padding:8px; border-radius:4px; margin-top:5px;'>").replace(/&lt;\/pre&gt;/g, "</pre>");
+
+            preview.innerHTML = parsed;
+        }
+
+        function sendBroadcast() {
+            let msg = document.getElementById('bcMessage').value.trim();
+            if(!msg) return alert('Pesan tidak boleh kosong!');
+            
+            if(!confirm('Anda yakin ingin memulai transmisi broadcast ini?')) return;
+            
+            let btn = document.getElementById('btnSend');
+            let wBox = document.getElementById('warningBox');
+            
+            btn.disabled = true;
+            btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> TRANSMISI SEDANG BERJALAN...';
+            wBox.style.display = 'none';
+            
+            fetch('/api/broadcast/send', {
+                method: 'POST',
+                headers: {'Content-Type': 'application/json'},
+                body: JSON.stringify({message: msg})
+            }).then(res => res.json()).then(data => {
+                if(data.success) {
+                    alert('Proses broadcast telah dimulai! Cek terminal console bot untuk progresnya.');
+                    document.getElementById('bcMessage').value = '';
+                    updatePreview();
+                } else {
+                    wBox.innerHTML = '<i class="fa-solid fa-triangle-exclamation"></i> ' + data.error;
+                    wBox.style.display = 'flex';
+                }
+                btn.disabled = false;
+                btn.innerHTML = '<i class="fa-regular fa-paper-plane"></i> MULAI TRANSMISI BROADCAST';
+            }).catch(e => {
+                alert('Koneksi terputus ke Engine.');
+                btn.disabled = false;
+                btn.innerHTML = '<i class="fa-regular fa-paper-plane"></i> MULAI TRANSMISI BROADCAST';
+            });
+        }
+    </script>
+</body>
+</html>
